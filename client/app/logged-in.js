@@ -1,13 +1,19 @@
-var LoggedIn = React.createClass({
+import React from 'react';
+import request from 'superagent';
+
+export default React.createClass( {
+  propTypes: {
+    lock: React.PropTypes.object.isRequired,
+    idToken: React.PropTypes.string.isRequired
+  },
+
   callApi: function() {
-    $.ajax({
-      url: 'http://localhost:3001/secured/ping',
-      method: 'GET'
-    }).then(function(data, textStatus, jqXHR) {
-      alert("The request to the secured enpoint was successfull");
-    }, function() {
-      alert("You need to download the server seed and start it to call this API");
-    });
+    request.get( 'http://localhost:3001/secured/ping' )
+    .set( 'Authorization', `Bearer ${this.props.idToken}` )
+    .end( ( err ) => {
+      if ( err ) return alert( 'You need to download the server seed and start it to call this API' );
+      alert( 'The request to the secured enpoint was successfull' );
+    } );
   },
 
   getInitialState: function() {
@@ -42,4 +48,4 @@ var LoggedIn = React.createClass({
         </div>);
     }
   }
-});
+} );

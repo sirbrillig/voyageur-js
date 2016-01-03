@@ -4,7 +4,11 @@ import locations from './routes/locations';
 const router = express.Router();
 
 router.get( '/ping', ( req, res ) => {
-  res.status( 200 ).json( { text: "All good. You don't need to be authenticated to call this" } );
+  res.status( 200 ).json( { text: 'All good. You don\'t need to be authenticated to call this' } );
+} );
+
+router.get( '/secured/ping', ( req, res ) => {
+  res.status( 200 ).json( { text: 'All good. You are authenticated' } );
 } );
 
 router.route( '/secured/locations' )
