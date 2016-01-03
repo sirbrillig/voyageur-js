@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 
-import router from './app/routes';
+import router from './routes';
 
 const app = express();
 

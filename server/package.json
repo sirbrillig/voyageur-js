@@ -10,7 +10,10 @@
       "es2015"
     ]
   },
-  "scripts": {},
+  "scripts": {
+    "run": "make run",
+    "build": "make build"
+  },
   "dependencies": {
     "body-parser": "^1.14.2",
     "cors": "^2.3.1",
