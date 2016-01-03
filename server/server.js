@@ -1,19 +1,20 @@
-var express = require( 'express' );
-var cors = require( 'cors' );
-var app = express();
-var jwt = require( 'express-jwt' );
-var dotenv = require( 'dotenv' );
-var bodyParser = require( 'body-parser' );
-var mongoose = require( 'mongoose' );
-var morgan = require( 'morgan' );
+import express from 'express';
+import cors from 'cors';
+import jwt from 'express-jwt';
+import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
 
-var router = require( './app/routes' );
+import router from './app/routes';
+
+const app = express();
 
 dotenv.load();
 
 mongoose.connect( process.env.MONGO_CLIENT_SERVER );
 
-var authenticate = jwt( {
+const authenticate = jwt( {
   secret: new Buffer( process.env.AUTH0_CLIENT_SECRET, 'base64' ),
   audience: process.env.AUTH0_CLIENT_ID
 } );
@@ -25,8 +26,8 @@ app.use( bodyParser.json() );
 app.use( '/secured', authenticate );
 app.use( '/', router );
 
-var port = process.env.PORT || 3001;
+const port = process.env.PORT || 3001;
 
-app.listen( port, function() {
+app.listen( port, () => {
   console.log( 'listening in http://localhost:' + port );
 } );
