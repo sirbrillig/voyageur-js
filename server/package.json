@@ -6,10 +6,13 @@
   "author": "Auth0",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "cors": "^2.3.1",
     "dotenv": "^0.2.8",
-    "express": "~3.3.8",
-    "express-jwt": "0.2.1"
+    "express": "^4.13.3",
+    "express-jwt": "0.2.1",
+    "kerberos": "0.0.17",
+    "mongoose": "^4.3.4"
   },
   "engines": {
     "node": "0.10.x"
