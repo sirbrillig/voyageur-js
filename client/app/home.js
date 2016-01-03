@@ -1,4 +1,6 @@
-var Home = React.createClass({
+import React from 'react';
+
+export default React.createClass({
   showLock: function() {
     this.props.lock.show();
   },
