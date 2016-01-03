@@ -5,6 +5,7 @@ var jwt = require( 'express-jwt' );
 var dotenv = require( 'dotenv' );
 var bodyParser = require( 'body-parser' );
 var mongoose = require( 'mongoose' );
+var morgan = require( 'morgan' );
 
 var Location = require( './app/models/location' );
 
@@ -18,6 +19,7 @@ var authenticate = jwt( {
 } );
 
 app.use( cors() );
+app.use( morgan( 'dev' ) );
 app.use( bodyParser.urlencoded( { extended: true } ) );
 app.use( bodyParser.json() );
 app.use( '/secured', authenticate );
@@ -32,7 +34,7 @@ router.get( '/secured/ping', function( req, res ) {
   res.status( 200 ).json( { text: "All good. You only get this message if you're authenticated" } );
 } );
 
-router.route( '/locations' )
+router.route( '/secured/locations' )
 .get( function( req, res ) {
   Location.find( function( err, locations ) {
     if ( err ) return res.status( 502 ).send( err );
@@ -49,7 +51,7 @@ router.route( '/locations' )
   } );
 } );
 
-router.route( '/locations/:location_id' )
+router.route( '/secured/locations/:location_id' )
 .get( function( req, res ) {
   Location.findById( req.params.location_id, function( err, location ) {
     if ( err ) return res.status( 502 ).send( err );
