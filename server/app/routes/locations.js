@@ -1,10 +1,26 @@
 import { Promise } from 'es6-promise';
 import Location from '../models/location';
 import LocationCollection from '../models/location-collection';
-import { getUserIdFromRequest } from '../helpers';
+import { getUserIdFromRequest, removeElementFromArray } from '../helpers';
+
+function removeLocationForUser( locationId, userId ) {
+  return new Promise( ( resolve, reject ) => {
+    findOrCreateCollectionForUser( userId )
+    .then( ( collection ) => {
+      collection.locations = removeElementFromArray( collection.locations, locationId );
+      return removeLocation( locationId, userId )
+      .then( ( location ) => {
+        collection.save( ( saveErr ) => {
+          if ( saveErr ) return reject( saveErr );
+          resolve( location );
+        } );
+      } );
+    } )
+  } );
+}
 
 function saveNewLocation( location, collection ) {
-  var promise = new Promise( ( resolve, reject ) => {
+  return new Promise( ( resolve, reject ) => {
     location.save( ( err ) => {
       if ( err ) return reject( err );
       collection.locations.push( location._id );
@@ -14,58 +30,46 @@ function saveNewLocation( location, collection ) {
       } );
     } );
   } );
-  return promise;
 }
 
-function removeLocation( res, locationId, userId, collection ) {
-  Location.remove( { _id: locationId, userId }, ( removeErr, location ) => {
-    if ( removeErr ) return res.status( 502 ).send( removeErr );
-    collection.save( ( saveErr ) => {
-      if ( saveErr ) return res.status( 502 ).send( saveErr );
-      res.status( 200 ).json( location );
+function removeLocation( locationId, userId ) {
+  return new Promise( ( resolve, reject ) => {
+    Location.remove( { _id: locationId, userId }, ( removeErr, location ) => {
+      if ( removeErr ) return reject( removeErr );
+      resolve( location );
     } );
   } );
 }
 
-function removeLocationFromCollection( locations, locationId ) {
-  return locations.reduce( ( collection, element ) => {
-    if ( element !== locationId ) collection.push( element );
-    return collection;
-  }, [] );
-}
-
 function getLocationsForCollection( collection ) {
-  var promise = new Promise( ( resolve, reject ) => {
+  return new Promise( ( resolve, reject ) => {
     collection.populate( 'locations', ( locationsErr, populatedCollection ) => {
       if ( locationsErr ) return reject( locationsErr );
       resolve( populatedCollection.locations );
     } );
   } );
-  return promise;
 }
 
 function listLocationsForUser( userId ) {
-  var promise = new Promise( ( resolve ) => {
+  return new Promise( ( resolve ) => {
     findOrCreateCollectionForUser( userId )
     .then( getLocationsForCollection )
     .then( resolve );
   } );
-  return promise;
 }
 
 function findOrCreateCollectionForUser( userId ) {
-  var promise = new Promise( ( resolve, reject ) => {
+  return new Promise( ( resolve, reject ) => {
     LocationCollection.findOrCreate( { userId }, ( err, collection ) => {
       if ( err ) return reject( err );
       resolve( collection );
     } );
   } );
-  return promise;
 }
 
 function createNewLocationForUser( userId, params ) {
   const { name, address } = params;
-  var promise = new Promise( ( resolve ) => {
+  return new Promise( ( resolve ) => {
     findOrCreateCollectionForUser( userId )
     .then( ( collection ) => {
       const location = new Location( { userId, name, address } );
@@ -73,7 +77,6 @@ function createNewLocationForUser( userId, params ) {
     } )
     .then( resolve );
   } );
-  return promise;
 }
 
 export default {
@@ -97,7 +100,7 @@ export default {
     } )
     .catch( ( err ) => {
       res.status( 502 ).send( err );
-    } )
+    } );
   },
 
   get( req, res ) {
@@ -131,10 +134,12 @@ export default {
   delete( req, res ) {
     const userId = getUserIdFromRequest( req );
     const locationId = req.params.location_id;
-    LocationCollection.findOrCreate( { userId }, ( err, collection ) => {
-      if ( err ) return res.status( 502 ).send( err );
-      collection.locations = removeLocationFromCollection( collection.locations, locationId );
-      removeLocation( res, locationId, userId, collection );
-    } );
+    removeLocationForUser( locationId, userId )
+    .then( ( location ) => {
+      res.status( 200 ).json( location );
+    } )
+    .catch( ( err ) => {
+      res.status( 502 ).json( err );
+    } )
   }
 };
