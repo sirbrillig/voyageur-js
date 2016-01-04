@@ -1,12 +1,14 @@
 import Location from '../models/location';
+import LocationCollection from '../models/location-collection';
 import { getUserIdFromRequest } from '../helpers';
 
 export default {
   list( req, res ) {
     const userId = getUserIdFromRequest( req );
-    Location.find( { userId } )
-    .then( ( locations ) => {
-      res.status( 200 ).json( locations );
+    LocationCollection.findOne( { userId } )
+    .populate( 'locations' )
+    .then( ( collection ) => {
+      res.status( 200 ).json( collection.locations );
     } )
     .then( null, ( err ) => {
       res.status( 502 ).send( err );
@@ -15,13 +17,16 @@ export default {
 
   create( req, res ) {
     const userId = getUserIdFromRequest( req );
-    const location = new Location();
-    location.userId = userId;
-    location.name = req.body.name;
-    location.address = req.body.address;
+    const { name, address } = req.body;
+    const collection = LocationCollection.findOne( { userId } );
+    const location = new Location( { userId, name, address } );
     location.save( ( err ) => {
       if ( err ) return res.status( 502 ).send( err );
-      res.status( 200 ).json( location );
+      collection.push( location._id );
+      collection.save( ( collectionErr ) => {
+        if ( collectionErr ) return res.status( 502 ).send( collectionErr );
+        res.status( 200 ).json( location );
+      } );
     } );
   },
 
@@ -38,10 +43,11 @@ export default {
 
   update( req, res ) {
     const userId = getUserIdFromRequest( req );
+    const { name, address } = req.body;
     Location.findOne( { _id: req.params.location_id, userId } )
     .then( ( location ) => {
-      location.name = req.body.name;
-      location.address = req.body.address;
+      location.name = name;
+      location.address = address;
       location.save( ( saveErr ) => {
         if ( saveErr ) return res.status( 502 ).send( saveErr );
         res.status( 200 ).json( location );
@@ -54,6 +60,7 @@ export default {
 
   delete( req, res ) {
     const userId = getUserIdFromRequest( req );
+    // TODO: remove location_id from LocationCollection as well
     Location.remove( { _id: req.params.location_id, userId } )
     .then( ( location ) => {
       res.status( 200 ).json( location );
