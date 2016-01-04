@@ -5,7 +5,7 @@ import { getUserIdFromRequest } from '../helpers';
 function saveNewLocation( res, location, collection ) {
   location.save( ( err ) => {
     if ( err ) return res.status( 502 ).send( err );
-    collection.push( location._id );
+    collection.locations.push( location._id );
     collection.save( ( collectionErr ) => {
       if ( collectionErr ) return res.status( 502 ).send( collectionErr );
       res.status( 200 ).json( location );
@@ -34,7 +34,9 @@ export default {
   list( req, res ) {
     const userId = getUserIdFromRequest( req );
     LocationCollection.findOrCreate( { userId }, ( err, collection ) => {
-      res.status( 200 ).json( collection.populate( 'locations' ).locations );
+      collection.populate( 'locations', ( locationsErr, populatedCollection ) => {
+        res.status( 200 ).json( populatedCollection.locations );
+      } );
     } );
   },
 
