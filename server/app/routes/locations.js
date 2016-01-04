@@ -1,3 +1,4 @@
+import { Promise } from 'es6-promise';
 import Location from '../models/location';
 import LocationCollection from '../models/location-collection';
 import { getUserIdFromRequest } from '../helpers';
@@ -30,13 +31,28 @@ function removeLocationFromCollection( locations, locationId ) {
   }, [] );
 }
 
+function listLocationsForUser( userId ) {
+  var promise = new Promise( ( resolve, reject ) => {
+    LocationCollection.findOrCreate( { userId }, ( err, collection ) => {
+      if ( err ) return reject( err );
+      collection.populate( 'locations', ( locationsErr, populatedCollection ) => {
+        if ( locationsErr ) return reject( locationsErr );
+        resolve( populatedCollection.locations );
+      } );
+    } );
+  } );
+  return promise;
+}
+
 export default {
   list( req, res ) {
     const userId = getUserIdFromRequest( req );
-    LocationCollection.findOrCreate( { userId }, ( err, collection ) => {
-      collection.populate( 'locations', ( locationsErr, populatedCollection ) => {
-        res.status( 200 ).json( populatedCollection.locations );
-      } );
+    listLocationsForUser( userId )
+    .then( ( locations ) => {
+      res.status( 200 ).json( locations );
+    } )
+    .catch( ( err ) => {
+      res.status( 502 ).send( err );
     } );
   },
 
