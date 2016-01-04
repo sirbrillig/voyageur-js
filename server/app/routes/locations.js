@@ -14,7 +14,8 @@ function removeLocationForUser( locationId, userId ) {
           if ( saveErr ) return reject( saveErr );
           resolve( location );
         } );
-      } );
+      } )
+      .catch( reject );
     } )
   } );
 }
@@ -51,10 +52,11 @@ function getLocationsForCollection( collection ) {
 }
 
 function listLocationsForUser( userId ) {
-  return new Promise( ( resolve ) => {
+  return new Promise( ( resolve, reject ) => {
     findOrCreateCollectionForUser( userId )
     .then( getLocationsForCollection )
-    .then( resolve );
+    .then( resolve )
+    .catch( reject );
   } );
 }
 
@@ -69,13 +71,14 @@ function findOrCreateCollectionForUser( userId ) {
 
 function createNewLocationForUser( userId, params ) {
   const { name, address } = params;
-  return new Promise( ( resolve ) => {
+  return new Promise( ( resolve, reject ) => {
     findOrCreateCollectionForUser( userId )
     .then( ( collection ) => {
       const location = new Location( { userId, name, address } );
       return saveNewLocation( location, collection );
     } )
-    .then( resolve );
+    .then( resolve )
+    .catch( reject );
   } );
 }
 
