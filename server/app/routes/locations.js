@@ -3,15 +3,18 @@ import Location from '../models/location';
 import LocationCollection from '../models/location-collection';
 import { getUserIdFromRequest } from '../helpers';
 
-function saveNewLocation( res, location, collection ) {
-  location.save( ( err ) => {
-    if ( err ) return res.status( 502 ).send( err );
-    collection.locations.push( location._id );
-    collection.save( ( collectionErr ) => {
-      if ( collectionErr ) return res.status( 502 ).send( collectionErr );
-      res.status( 200 ).json( location );
+function saveNewLocation( location, collection ) {
+  var promise = new Promise( ( resolve, reject ) => {
+    location.save( ( err ) => {
+      if ( err ) return reject( err );
+      collection.locations.push( location._id );
+      collection.save( ( collectionErr ) => {
+        if ( collectionErr ) return reject( collectionErr );
+        resolve( location );
+      } );
     } );
   } );
+  return promise;
 }
 
 function removeLocation( res, locationId, userId, collection ) {
@@ -31,15 +34,44 @@ function removeLocationFromCollection( locations, locationId ) {
   }, [] );
 }
 
+function getLocationsForCollection( collection ) {
+  var promise = new Promise( ( resolve, reject ) => {
+    collection.populate( 'locations', ( locationsErr, populatedCollection ) => {
+      if ( locationsErr ) return reject( locationsErr );
+      resolve( populatedCollection.locations );
+    } );
+  } );
+  return promise;
+}
+
 function listLocationsForUser( userId ) {
+  var promise = new Promise( ( resolve ) => {
+    findOrCreateCollectionForUser( userId )
+    .then( getLocationsForCollection )
+    .then( resolve );
+  } );
+  return promise;
+}
+
+function findOrCreateCollectionForUser( userId ) {
   var promise = new Promise( ( resolve, reject ) => {
     LocationCollection.findOrCreate( { userId }, ( err, collection ) => {
       if ( err ) return reject( err );
-      collection.populate( 'locations', ( locationsErr, populatedCollection ) => {
-        if ( locationsErr ) return reject( locationsErr );
-        resolve( populatedCollection.locations );
-      } );
+      resolve( collection );
     } );
+  } );
+  return promise;
+}
+
+function createNewLocationForUser( userId, params ) {
+  const { name, address } = params;
+  var promise = new Promise( ( resolve ) => {
+    findOrCreateCollectionForUser( userId )
+    .then( ( collection ) => {
+      const location = new Location( { userId, name, address } );
+      return saveNewLocation( location, collection );
+    } )
+    .then( resolve );
   } );
   return promise;
 }
@@ -59,11 +91,13 @@ export default {
   create( req, res ) {
     const userId = getUserIdFromRequest( req );
     const { name, address } = req.body;
-    LocationCollection.findOrCreate( { userId }, ( err, collection ) => {
-      if ( err ) return res.status( 502 ).send( err );
-      const location = new Location( { userId, name, address } );
-      saveNewLocation( res, location, collection );
-    } );
+    createNewLocationForUser( userId, { name, address } )
+    .then( ( location ) => {
+      res.status( 200 ).json( location );
+    } )
+    .catch( ( err ) => {
+      res.status( 502 ).send( err );
+    } )
   },
 
   get( req, res ) {
