@@ -13,7 +13,8 @@ router.get( '/secured/ping', ( req, res ) => {
 
 router.route( '/secured/locations' )
 .get( locations.list )
-.post( locations.create );
+.post( locations.create )
+.put( locations.updateList );
 
 router.route( '/secured/locations/:location_id' )
 .get( locations.get )
