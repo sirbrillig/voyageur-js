@@ -1,7 +1,21 @@
 import { Promise } from 'es6-promise';
+import logStream from 'bunyan-mongodb-stream';
+import bunyan from 'bunyan';
+
+import Log from '../models/log';
 import Location from '../models/location';
 import LocationCollection from '../models/location-collection';
 import { getUserIdFromRequest, removeElementFromArray } from '../helpers';
+
+const LogEntryStream = logStream( { model: Log } );
+const log = bunyan.createLogger( {
+  name: 'location-events',
+  streams: [
+    { stream: process.stdout },
+    { stream: LogEntryStream },
+  ],
+  serializers: bunyan.stdSerializers
+} );
 
 function removeLocationForUser( locationId, userId ) {
   return new Promise( ( resolve, reject ) => {
@@ -124,9 +138,11 @@ export default {
     const userId = getUserIdFromRequest( req );
     listLocationsForUser( userId )
     .then( ( locations ) => {
+      log.info( { userId, event: 'list' } );
       res.status( 200 ).json( locations );
     } )
     .catch( ( err ) => {
+      log.error( { userId, event: 'list' }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -136,20 +152,25 @@ export default {
     const { name, address } = req.body;
     createNewLocationForUser( userId, { name, address } )
     .then( ( location ) => {
+      log.info( { userId, event: 'create', data: { name, address } } );
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
+      log.error( { userId, event: 'create', data: { name, address } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
 
   get( req, res ) {
     const userId = getUserIdFromRequest( req );
-    Location.findOne( { _id: req.params.location_id, userId } )
+    const { locationId } = req.params;
+    Location.findOne( { _id: locationId, userId } )
     .then( ( location ) => {
+      log.info( { userId, event: 'get', data: { locationId } } );
       res.status( 200 ).json( location );
     } )
     .then( null, ( err ) => {
+      log.error( { userId, event: 'get', data: { locationId } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -169,12 +190,15 @@ export default {
   update( req, res ) {
     const userId = getUserIdFromRequest( req );
     const { name, address } = req.body;
-    Location.findOne( { _id: req.params.location_id, userId } )
+    const { locationId } = req.params;
+    Location.findOne( { _id: locationId, userId } )
     .then( ( location ) => {
       location.name = name;
       location.address = address;
       location.save( ( saveErr ) => {
-        if ( saveErr ) return res.status( 502 ).send( saveErr );
+        if ( saveErr ) {
+          return res.status( 502 ).send( saveErr );
+        }
         res.status( 200 ).json( location );
       } );
     } )
@@ -185,13 +209,15 @@ export default {
 
   delete( req, res ) {
     const userId = getUserIdFromRequest( req );
-    const locationId = req.params.location_id;
+    const { locationId } = req.params;
     removeLocationForUser( locationId, userId )
     .then( ( location ) => {
+      log.info( { userId, event: 'delete', data: { locationId } } );
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      res.status( 502 ).json( err );
+      log.error( { userId, event: 'delete', data: { locationId } }, err.message );
+      res.status( 502 ).send( err );
     } )
   }
 };
