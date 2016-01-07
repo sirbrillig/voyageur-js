@@ -92,7 +92,7 @@ function getLocationsForCollection( collection ) {
   } );
 }
 
-function listLocationsForUser( userId ) {
+export function listLocationsForUser( userId ) {
   return new Promise( ( resolve, reject ) => {
     findOrCreateCollectionForUser( userId )
     .then( getLocationsForCollection )
