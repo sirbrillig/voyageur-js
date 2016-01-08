@@ -180,9 +180,11 @@ export default {
     const { locations } = req.body;
     updateLocationListForUser( userId, locations )
     .then( ( updatedLocations ) => {
+      log.info( { userId, event: 'updateList', data: { locations } } );
       res.status( 200 ).json( updatedLocations );
     } )
     .then( null, ( err ) => {
+      log.error( { userId, event: 'updateList', data: { locations } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -197,12 +199,15 @@ export default {
       location.address = address;
       location.save( ( saveErr ) => {
         if ( saveErr ) {
+          log.error( { userId, event: 'update', data: { locationId, name, address } }, saveErr.message );
           return res.status( 502 ).send( saveErr );
         }
+        log.info( { userId, event: 'update', data: { locationId, name, address } } );
         res.status( 200 ).json( location );
       } );
     } )
     .then( null, ( err ) => {
+      log.error( { userId, event: 'update', data: { locationId, name, address } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
