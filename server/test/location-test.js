@@ -105,26 +105,43 @@ describe( 'locations', function() {
   } );
 
   describe( '.removeLocationForUser', function() {
-    it( 'removes the location from the database', function( done ) {
+    it( 'removes the location from the database', function() {
       let locationCount = 0;
-      Location.find()
+      return Location.find()
       .then( ( initialData ) => {
         locationCount = initialData.length;
         return locations.removeLocationForUser( testUserId, homeLocation )
       } )
       .then( () => Location.find() )
       .then( function( data ) {
-        if ( data.length === ( locationCount - 1 ) ) return done();
-        done( `expected location to be deleted but got ${JSON.stringify( data )}` );
+        expect( data ).to.have.length( locationCount - 1 );
       } );
     } );
 
-    it( 'removes the location from the user\'s list', function( done ) {
-      locations.removeLocationForUser( testUserId, homeLocation )
+    it( 'removes the location from the user\'s list', function() {
+      return locations.removeLocationForUser( testUserId, homeLocation )
       .then( () => locations.listLocationsForUser( testUserId ) )
       .then( function( data ) {
-        if ( data.length === 0 ) return done();
-        done( `expected empty locations but got ${JSON.stringify( data )}` );
+        expect( data ).to.be.empty;
+      } );
+    } );
+
+    it( 'does not remove the location if it exists for a different user', function( done ) {
+      return locations.removeLocationForUser( testUserId2, homeLocation._id )
+      .then( function( data ) {
+        done( `expected a rejection, but got ${data}` );
+      } )
+      .catch( function() {
+        done();
+      } );
+    } );
+
+    it( 'returns the removed location', function() {
+      return locations.removeLocationForUser( testUserId, homeLocation._id )
+      .then( function( location ) {
+        const { name, address } = location;
+        expect( name ).to.eql( homeLocation.name );
+        expect( address ).to.eql( homeLocation.address );
       } );
     } );
   } );
@@ -139,10 +156,55 @@ describe( 'locations', function() {
       } );
     } );
 
-    it( 'does not return the location if it exists for a different user', function() {
+    it( 'does not return the location if it exists for a different user', function( done ) {
       return locations.getLocationForUser( testUserId2, homeLocation._id )
+      .catch( function() {
+        done();
+      } );
+    } );
+  } );
+
+  describe( '.updateLocationForUser', function() {
+    it( 'returns the updated location', function() {
+      const newParams = { name: 'updateLocationForUsertest', address: '321 updateLocationForUser' };
+      return locations.updateLocationForUser( testUserId, homeLocation._id, newParams )
       .then( function( data ) {
-        expect( data ).to.be.not.ok;
+        expect( data ).to.have.property( 'name' ).eql( newParams.name );
+        expect( data ).to.have.property( 'address' ).eql( newParams.address );
+      } );
+    } );
+
+    it( 'updates the location in the database', function() {
+      const newParams = { name: 'updateLocationForUsertest', address: '321 updateLocationForUser' };
+      return locations.updateLocationForUser( testUserId, homeLocation._id, newParams )
+      .then( () => locations.getLocationForUser( testUserId, homeLocation._id ) )
+      .then( function( data ) {
+        expect( data ).to.have.property( 'name' ).eql( newParams.name );
+        expect( data ).to.have.property( 'address' ).eql( newParams.address );
+      } );
+    } );
+
+    it( 'does not update the location if the location belongs to another user', function( done ) {
+      const newParams = { name: 'updateLocationForUsertest', address: '321 updateLocationForUser' };
+      return locations.updateLocationForUser( testUserId2, homeLocation._id, newParams )
+      .catch( function() {
+        done();
+      } );
+    } );
+
+    it( 'does not update the location _id when updating', function() {
+      const newParams = { _id: 'foobar', name: 'updateLocationForUsertest', address: '321 updateLocationForUser' };
+      return locations.updateLocationForUser( testUserId, homeLocation._id, newParams )
+      .then( function( data ) {
+        expect( data ).to.have.property( '_id' ).eql( homeLocation._id );
+      } );
+    } );
+
+    it( 'does not add non-whitelisted parameters when updating', function() {
+      const newParams = { games: 'foobar', name: 'updateLocationForUsertest', address: '321 updateLocationForUser' };
+      return locations.updateLocationForUser( testUserId, homeLocation._id, newParams )
+      .then( function( data ) {
+        expect( data ).to.not.have.property( 'games' );
       } );
     } );
   } );

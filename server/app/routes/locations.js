@@ -18,7 +18,29 @@ const log = bunyan.createLogger( {
 } );
 
 export function getLocationForUser( userId, locationId ) {
-  return Location.findOne( { _id: locationId, userId } );
+  return new Promise( ( resolve, reject ) => {
+    Location.findOne( { _id: locationId, userId }, function( err, location ) {
+      if ( err ) return reject( err );
+      if ( ! location ) return reject( new Error( 'no such location found' ) );
+      resolve( location );
+    } );
+  } );
+}
+
+export function updateLocationForUser( userId, locationId, params ) {
+  const { name, address } = params;
+  return new Promise( ( resolve, reject ) => {
+    getLocationForUser( userId, locationId )
+    .then( ( location ) => {
+      location.name = name;
+      location.address = address;
+      location.save( ( saveErr ) => {
+        if ( saveErr ) return reject( saveErr );
+        resolve( location );
+      } );
+    } )
+    .catch( reject );
+  } );
 }
 
 export function removeLocationForUser( userId, locationId ) {
@@ -26,7 +48,7 @@ export function removeLocationForUser( userId, locationId ) {
     findOrCreateCollectionForUser( userId )
     .then( ( collection ) => {
       collection.locations = removeElementFromArray( collection.locations, locationId );
-      return removeLocation( locationId, userId )
+      removeLocation( locationId, userId )
       .then( ( location ) => {
         collection.save( ( saveErr ) => {
           if ( saveErr ) return reject( saveErr );
@@ -34,7 +56,7 @@ export function removeLocationForUser( userId, locationId ) {
         } );
       } )
       .catch( reject );
-    } )
+    } );
   } );
 }
 
@@ -53,8 +75,9 @@ function saveNewLocation( location, collection ) {
 
 function removeLocation( locationId, userId ) {
   return new Promise( ( resolve, reject ) => {
-    Location.remove( { _id: locationId, userId }, ( removeErr, location ) => {
+    Location.findOneAndRemove( { _id: locationId, userId }, {}, ( removeErr, location ) => {
       if ( removeErr ) return reject( removeErr );
+      if ( ! location ) return reject( new Error( 'no such location found' ) );
       resolve( location );
     } );
   } );
@@ -137,6 +160,9 @@ export function createNewLocationForUser( userId, params ) {
   } );
 }
 
+/**
+ * Here begins the routes
+ */
 export default {
   list( req, res ) {
     const userId = getUserIdFromRequest( req );
@@ -173,7 +199,7 @@ export default {
       log.info( { userId, event: 'get', data: { locationId } } );
       res.status( 200 ).json( location );
     } )
-    .then( null, ( err ) => {
+    .catch( ( err ) => {
       log.error( { userId, event: 'get', data: { locationId } }, err.message );
       res.status( 502 ).send( err );
     } );
@@ -187,7 +213,7 @@ export default {
       log.info( { userId, event: 'updateList', data: { locations } } );
       res.status( 200 ).json( updatedLocations );
     } )
-    .then( null, ( err ) => {
+    .catch( ( err ) => {
       log.error( { userId, event: 'updateList', data: { locations } }, err.message );
       res.status( 502 ).send( err );
     } );
@@ -197,20 +223,12 @@ export default {
     const userId = getUserIdFromRequest( req );
     const { name, address } = req.body;
     const { locationId } = req.params;
-    Location.findOne( { _id: locationId, userId } )
+    updateLocationForUser( userId, locationId, { name, address } )
     .then( ( location ) => {
-      location.name = name;
-      location.address = address;
-      location.save( ( saveErr ) => {
-        if ( saveErr ) {
-          log.error( { userId, event: 'update', data: { locationId, name, address } }, saveErr.message );
-          return res.status( 502 ).send( saveErr );
-        }
-        log.info( { userId, event: 'update', data: { locationId, name, address } } );
-        res.status( 200 ).json( location );
-      } );
+      log.info( { userId, event: 'update', data: { locationId, name, address } } );
+      res.status( 200 ).json( location );
     } )
-    .then( null, ( err ) => {
+    .catch( ( err ) => {
       log.error( { userId, event: 'update', data: { locationId, name, address } }, err.message );
       res.status( 502 ).send( err );
     } );
