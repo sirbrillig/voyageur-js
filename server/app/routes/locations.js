@@ -17,7 +17,7 @@ const log = bunyan.createLogger( {
   serializers: bunyan.stdSerializers
 } );
 
-function removeLocationForUser( locationId, userId ) {
+export function removeLocationForUser( userId, locationId ) {
   return new Promise( ( resolve, reject ) => {
     findOrCreateCollectionForUser( userId )
     .then( ( collection ) => {
@@ -215,7 +215,7 @@ export default {
   delete( req, res ) {
     const userId = getUserIdFromRequest( req );
     const { locationId } = req.params;
-    removeLocationForUser( locationId, userId )
+    removeLocationForUser( userId, locationId )
     .then( ( location ) => {
       log.info( { userId, event: 'delete', data: { locationId } } );
       res.status( 200 ).json( location );

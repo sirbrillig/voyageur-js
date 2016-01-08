@@ -95,4 +95,24 @@ describe( 'locations', function() {
       } );
     } );
   } );
+
+  describe( '.removeLocationForUser', function() {
+    it( 'removes the location from the database', function( done ) {
+      locations.removeLocationForUser( testUserId, homeLocation )
+      .then( () => Location.find() )
+      .then( function( data ) {
+        if ( data.length === 1 ) return done();
+        done( `expected location to be deleted but got ${JSON.stringify( data )}` );
+      } );
+    } );
+
+    it( 'removes the location from the user\'s list', function( done ) {
+      locations.removeLocationForUser( testUserId, homeLocation )
+      .then( () => locations.listLocationsForUser( testUserId ) )
+      .then( function( data ) {
+        if ( data.length === 0 ) return done();
+        done( `expected empty locations but got ${JSON.stringify( data )}` );
+      } );
+    } );
+  } );
 } );
