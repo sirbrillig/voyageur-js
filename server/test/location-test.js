@@ -98,10 +98,15 @@ describe( 'locations', function() {
 
   describe( '.removeLocationForUser', function() {
     it( 'removes the location from the database', function( done ) {
-      locations.removeLocationForUser( testUserId, homeLocation )
+      let locationCount = 0;
+      Location.find()
+      .then( ( initialData ) => {
+        locationCount = initialData.length;
+        return locations.removeLocationForUser( testUserId, homeLocation )
+      } )
       .then( () => Location.find() )
       .then( function( data ) {
-        if ( data.length === 1 ) return done();
+        if ( data.length === ( locationCount - 1 ) ) return done();
         done( `expected location to be deleted but got ${JSON.stringify( data )}` );
       } );
     } );
