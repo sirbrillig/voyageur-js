@@ -17,6 +17,10 @@ const log = bunyan.createLogger( {
   serializers: bunyan.stdSerializers
 } );
 
+export function getLocationForUser( userId, locationId ) {
+  return Location.findOne( { _id: locationId, userId } );
+}
+
 export function removeLocationForUser( userId, locationId ) {
   return new Promise( ( resolve, reject ) => {
     findOrCreateCollectionForUser( userId )
@@ -164,7 +168,7 @@ export default {
   get( req, res ) {
     const userId = getUserIdFromRequest( req );
     const { locationId } = req.params;
-    Location.findOne( { _id: locationId, userId } )
+    getLocationForUser( userId, locationId )
     .then( ( location ) => {
       log.info( { userId, event: 'get', data: { locationId } } );
       res.status( 200 ).json( location );

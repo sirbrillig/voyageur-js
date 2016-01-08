@@ -129,13 +129,31 @@ describe( 'locations', function() {
     } );
   } );
 
+  describe( '.getLocationForUser', function() {
+    it( 'returns the location if it exists for a user', function() {
+      return locations.getLocationForUser( testUserId, homeLocation._id )
+      .then( function( data ) {
+        expect( data ).to.have.property( '_id' ).eql( homeLocation._id );
+        expect( data ).to.have.property( 'name' ).eql( homeLocation.name );
+        expect( data ).to.have.property( 'address' ).eql( homeLocation.address );
+      } );
+    } );
+
+    it( 'does not return the location if it exists for a different user', function() {
+      return locations.getLocationForUser( testUserId2, homeLocation._id )
+      .then( function( data ) {
+        expect( data ).to.be.not.ok;
+      } );
+    } );
+  } );
+
   describe( '.updateLocationListForUser', function() {
-    it( 'Returns re-ordered locations', function() {
+    it( 'returns re-ordered locations', function() {
       const ids = [ foodLocation._id, teaLocation._id, workLocation._id ];
       expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( ids );
     } );
 
-    it( 'Re-orders existing locations', function( done ) {
+    it( 're-orders existing locations', function( done ) {
       const ids = [ foodLocation._id, teaLocation._id, workLocation._id ];
       locations.updateLocationListForUser( testUserId2, ids )
       .then( () => locations.listLocationsForUser( testUserId2 ) )
@@ -146,19 +164,19 @@ describe( 'locations', function() {
       } );
     } );
 
-    it( 'Does not re-order collection if params include a duplicate location ID', function() {
+    it( 'does not re-order collection if params include a duplicate location ID', function() {
       const ids = [ foodLocation._id, foodLocation._id, workLocation._id ];
       const oldIds = [ workLocation._id, foodLocation._id, teaLocation._id ];
       expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( oldIds );
     } );
 
-    it( 'Does not re-order collection if params do not include all location IDs', function() {
+    it( 'does not re-order collection if params do not include all location IDs', function() {
       const ids = [ foodLocation._id, workLocation._id ];
       const oldIds = [ workLocation._id, foodLocation._id, teaLocation._id ];
       expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( oldIds );
     } );
 
-    it( 'Does not re-order collection if params include a location ID for another user', function() {
+    it( 'does not re-order collection if params include a location ID for another user', function() {
       const ids = [ teaLocation._id, foodLocation._id, homeLocation._id ];
       const oldIds = [ workLocation._id, foodLocation._id, teaLocation._id ];
       expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( oldIds );
