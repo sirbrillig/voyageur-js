@@ -120,7 +120,7 @@ function findOrCreateCollectionForUser( userId ) {
   } );
 }
 
-function createNewLocationForUser( userId, params ) {
+export function createNewLocationForUser( userId, params ) {
   const { name, address } = params;
   return new Promise( ( resolve, reject ) => {
     findOrCreateCollectionForUser( userId )

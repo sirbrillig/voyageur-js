@@ -64,4 +64,35 @@ describe( 'locations', function() {
       } );
     } );
   } );
+
+  describe( '.createNewLocationForUser', function() {
+    it( 'creates a new location with the parameters specified', function( done ) {
+      const params = { name: 'createNewLocationForUsertest', address: '1234 address place' };
+      locations.createNewLocationForUser( testUserId, params )
+      .then( function( data ) {
+        if ( data.name === params.name && data.address === params.address ) return done();
+        done( `location not returned, instead got: ${JSON.stringify( data )}` );
+      } );
+    } );
+
+    it( 'creates a new location without non-whitelisted parameters', function( done ) {
+      const params = { foo: 'bar', name: 'createNewLocationForUsertest', address: '1234 address place' };
+      locations.createNewLocationForUser( testUserId, params )
+      .then( function( data ) {
+        if ( ! data.foo ) return done();
+        done( `location included non-whitelisted parameter, instead got: ${JSON.stringify( data )}` );
+      } );
+    } );
+
+    it( 'adds the location to the end of the user\'s list', function( done ) {
+      const params = { name: 'createNewLocationForUsertest', address: '1234 address place' };
+      locations.createNewLocationForUser( testUserId, params )
+      .then( () => locations.listLocationsForUser( testUserId ) )
+      .then( function( data ) {
+        const lastLocation = data[ data.length - 1 ];
+        if ( lastLocation.name === params.name && lastLocation.address === params.address ) return done();
+        done( `expected new location added to end of locations, instead last location was ${JSON.stringify( lastLocation )}` );
+      } );
+    } );
+  } );
 } );
