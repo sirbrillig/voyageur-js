@@ -16,7 +16,7 @@ router.route( '/secured/locations' )
 .post( locations.create )
 .put( locations.updateList );
 
-router.route( '/secured/locations/:location_id' )
+router.route( '/secured/locations/:locationId' )
 .get( locations.get )
 .put( locations.update )
 .delete( locations.delete );
