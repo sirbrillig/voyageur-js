@@ -15,16 +15,22 @@ const testUserId = 'testUser';
 const testUserId2 = 'testUser2';
 let homeLocation;
 let workLocation;
+let foodLocation;
+let teaLocation;
 let testUserLocationCollection;
 let testUser2LocationCollection;
 
 function populateDb( done ) {
   homeLocation = new Location( { userId: testUserId, name: 'foo', address: 'bar' } );
-  workLocation = new Location( { userId: testUserId2, name: 'work', address: 'place' } );
+  workLocation = new Location( { userId: testUserId2, name: 'work', address: 'workplace' } );
+  foodLocation = new Location( { userId: testUserId2, name: 'food', address: 'foodplace' } );
+  teaLocation = new Location( { userId: testUserId2, name: 'tea', address: 'teaplace' } );
   testUserLocationCollection = new LocationCollection( { userId: testUserId, locations: [ homeLocation ] } );
-  testUser2LocationCollection = new LocationCollection( { userId: testUserId2, locations: [ workLocation ] } );
+  testUser2LocationCollection = new LocationCollection( { userId: testUserId2, locations: [ workLocation, foodLocation, teaLocation ] } );
   homeLocation.save()
   .then( workLocation.save )
+  .then( foodLocation.save )
+  .then( teaLocation.save )
   .then( testUserLocationCollection.save )
   .then( testUser2LocationCollection.save )
   .then( () => done() )
@@ -59,7 +65,9 @@ describe( 'locations', function() {
     it( 'returns an array that does not include Locations from other users', function( done ) {
       locations.listLocationsForUser( testUserId2 )
       .then( function( data ) {
-        if ( data.length === 1 && data[0].name !== homeLocation.name && data[0].address !== homeLocation.address ) return done();
+        if ( data.some( ( loc ) => {
+          return ( loc.name !== homeLocation.name && loc.address !== homeLocation.address );
+        } ) ) return done();
         done( `data did not match expected data in ${JSON.stringify( data )}` );
       } );
     } );
@@ -118,6 +126,42 @@ describe( 'locations', function() {
         if ( data.length === 0 ) return done();
         done( `expected empty locations but got ${JSON.stringify( data )}` );
       } );
+    } );
+  } );
+
+  describe( '.updateLocationListForUser', function() {
+    it( 'Returns re-ordered locations', function() {
+      const ids = [ foodLocation._id, teaLocation._id, workLocation._id ];
+      expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( ids );
+    } );
+
+    it( 'Re-orders existing locations', function( done ) {
+      const ids = [ foodLocation._id, teaLocation._id, workLocation._id ];
+      locations.updateLocationListForUser( testUserId2, ids )
+      .then( () => locations.listLocationsForUser( testUserId2 ) )
+      .then( function( data ) {
+        const newIds = data.map( loc => loc._id );
+        if ( newIds.toString() === ids.toString() ) return done();
+        done( `locations were not re-ordered; expected ${ids.toString()}, got ${newIds.toString()}` );
+      } );
+    } );
+
+    it( 'Does not re-order collection if params include a duplicate location ID', function() {
+      const ids = [ foodLocation._id, foodLocation._id, workLocation._id ];
+      const oldIds = [ workLocation._id, foodLocation._id, teaLocation._id ];
+      expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( oldIds );
+    } );
+
+    it( 'Does not re-order collection if params do not include all location IDs', function() {
+      const ids = [ foodLocation._id, workLocation._id ];
+      const oldIds = [ workLocation._id, foodLocation._id, teaLocation._id ];
+      expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( oldIds );
+    } );
+
+    it( 'Does not re-order collection if params include a location ID for another user', function() {
+      const ids = [ teaLocation._id, foodLocation._id, homeLocation._id ];
+      const oldIds = [ workLocation._id, foodLocation._id, teaLocation._id ];
+      expect( locations.updateLocationListForUser( testUserId2, ids ) ).to.eventually.eql( oldIds );
     } );
   } );
 } );

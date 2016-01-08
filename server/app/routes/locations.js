@@ -101,7 +101,7 @@ export function listLocationsForUser( userId ) {
   } );
 }
 
-function updateLocationListForUser( userId, locationIds ) {
+export function updateLocationListForUser( userId, locationIds ) {
   return new Promise( ( resolve, reject ) => {
     findOrCreateCollectionForUser( userId )
     .then( ( collection ) => updateLocationsInCollection( collection, locationIds ) )
