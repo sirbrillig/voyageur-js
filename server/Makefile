@@ -42,7 +42,7 @@ watchify:
 clean:
 	@rm -rf node_modules $(BUILD_DIR)
 
-test:
+test: build
 	@echo "Running tests..."
 	$(MOCHA) --compilers js:babel-register
 
