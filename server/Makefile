@@ -42,8 +42,10 @@ watchify:
 clean:
 	@rm -rf node_modules $(BUILD_DIR)
 
-test: build
+run-tests:
 	@echo "Running tests..."
 	$(MOCHA) --compilers js:babel-register
 
-.PHONY: run watchify install npm node-version build-server clean test
+test: build run-tests
+
+.PHONY: run watchify install npm node-version build-server clean test run-tests
