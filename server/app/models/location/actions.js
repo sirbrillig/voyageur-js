@@ -1,7 +1,7 @@
 import { Promise } from 'es6-promise';
-import Location from '../models/location';
-import LocationCollection from '../models/location-collection';
-import { removeElementFromArray } from '../helpers';
+import Location from '../../models/location';
+import LocationCollection from '../../models/location-collection';
+import { removeElementFromArray } from '../../helpers';
 
 export function getLocationForUser( userId, locationId ) {
   return new Promise( ( resolve, reject ) => {

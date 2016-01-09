@@ -2,7 +2,7 @@ const mongoose = require( 'mongoose' );
 const mockgoose = require( 'mockgoose' );
 const chai = require( 'chai' );
 const chaiAsPromised = require( 'chai-as-promised' );
-const locations = require( '../app/helpers/locations' );
+const locations = require( '../app/models/location' );
 
 chai.use( chaiAsPromised );
 const expect = chai.expect;

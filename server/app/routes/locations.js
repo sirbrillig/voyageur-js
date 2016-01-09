@@ -3,7 +3,14 @@ import bunyan from 'bunyan';
 
 import Log from '../models/log';
 import { getUserIdFromRequest } from '../helpers';
-import { listLocationsForUser, createNewLocationForUser, getLocationForUser, updateLocationListForUser, updateLocationForUser, removeLocationForUser } from '../helpers/locations';
+import {
+listLocationsForUser,
+createNewLocationForUser,
+getLocationForUser,
+updateLocationListForUser,
+updateLocationForUser,
+removeLocationForUser
+} from '../models/location';
 
 const LogEntryStream = logStream( { model: Log } );
 const log = bunyan.createLogger( {
