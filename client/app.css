@@ -93,3 +93,18 @@ label {
 .login-page .login-box {
   padding: 100px 0;
 }
+
+.login-box__logo {
+  width: 200px;
+}
+
+.login-box__title {
+  font-size: 2em;
+}
+
+@media( min-width: 755px ) {
+  .login-box__button {
+    width: 720px;
+    margin: auto;
+  }
+}
