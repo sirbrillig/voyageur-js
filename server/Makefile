@@ -1,6 +1,7 @@
 WATCHIFY = ./node_modules/.bin/watchify
 BROWSERIFY = ./node_modules/.bin/browserify
 NODEMON = ./node_modules/.bin/nodemon
+MOCHA = ./node_modules/.bin/mocha
 NPM = npm
 NODE ?= node
 BUILD_DIR = build
@@ -41,4 +42,10 @@ watchify:
 clean:
 	@rm -rf node_modules $(BUILD_DIR)
 
-.PHONY: run watchify install npm node-version build-server clean
+run-tests:
+	@echo "Running tests..."
+	$(MOCHA) --compilers js:babel-register
+
+test: build run-tests
+
+.PHONY: run watchify install npm node-version build-server clean test run-tests
