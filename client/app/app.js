@@ -2,7 +2,7 @@ import React from 'react';
 import Auth0Lock from 'auth0-lock';
 
 import LoggedIn from './logged-in';
-import Home from './home';
+import LogInBox from './log-in-box';
 
 export default React.createClass( {
   componentWillMount() {
@@ -39,6 +39,6 @@ export default React.createClass( {
     if ( this.state.idToken ) {
       return ( <LoggedIn lock={ this.lock } idToken={ this.state.idToken } /> );
     }
-    return ( <Home lock={ this.lock } /> );
+    return ( <LogInBox lock={ this.lock } /> );
   }
 } );

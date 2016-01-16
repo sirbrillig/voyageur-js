@@ -90,20 +90,21 @@ label {
   padding-left: 10%;
   margin-bottom: 20px;
 }
-.login-page .login-box {
+
+.log-in-box {
   padding: 100px 0;
 }
 
-.login-box__logo {
+.log-in-box__logo {
   width: 200px;
 }
 
-.login-box__title {
+.log-in-box__title {
   font-size: 2em;
 }
 
 @media( min-width: 755px ) {
-  .login-box__button {
+  .log-in-box__button {
     width: 720px;
     margin: auto;
   }
