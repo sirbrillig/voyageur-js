@@ -1,19 +1,9 @@
 import React from 'react';
-import request from 'superagent';
 
 export default React.createClass( {
   propTypes: {
     lock: React.PropTypes.object.isRequired,
     idToken: React.PropTypes.string.isRequired
-  },
-
-  callApi() {
-    request.get( 'http://localhost:3001/secured/ping' )
-    .set( 'Authorization', `Bearer ${this.props.idToken}` )
-    .end( ( err ) => {
-      if ( err ) return alert( 'You need to download the server seed and start it to call this API' );
-      alert( 'The request to the secured enpoint was successfull' );
-    } );
   },
 
   getInitialState() {
@@ -26,7 +16,8 @@ export default React.createClass( {
     this.props.lock.getProfile( this.props.idToken, ( err, profile ) => {
       if ( err ) {
         console.log( 'Error loading the Profile', err );
-        alert( 'Error loading the Profile' );
+        if ( window ) window.location = '/';
+        return;
       }
       this.setState( { profile: profile } );
     } );
@@ -35,17 +26,21 @@ export default React.createClass( {
   render() {
     if ( this.state.profile ) {
       return (
-        <div className="logged-in-box auth0-box logged-in">
-          <h1 id="logo"><img src="https://cdn.auth0.com/blog/auth0_logo_final_blue_RGB.png" /></h1>
-          <img src={ this.state.profile.picture } />
-          <h2>Welcome { this.state.profile.nickname }</h2>
-          <button onClick={ this.callApi } className="btn btn-lg btn-primary">Call API</button>
+        <div className="logged-in">
+          <Header profile={ this.state.profile }/>
+          <Library />
+          <Trip />
+          <Footer />
         </div>
       );
     }
     return (
-      <div className="logged-in-box auth0-box logged-in">
-        <h1 id="logo"><img src="https://cdn.auth0.com/blog/auth0_logo_final_blue_RGB.png" /></h1>
+      <div className="logged-in">
+        <div className="logged-in__error">
+          <img className="logged-in__error__logo" src="/assets/logo.png" />
+          <p className="logged-in__error__message">Sorry, I couldn't log you in.</p>
+          <a href="/" className="logged-in__error__button btn btn-primary btn-lg btn-block">Try again</a>
+        </div>
       </div>
     );
   }

@@ -91,6 +91,9 @@ label {
   margin-bottom: 20px;
 }
 
+/**
+ * LogInBox
+ */
 .log-in-box {
   padding: 100px 0;
 }
@@ -109,3 +112,22 @@ label {
     margin: auto;
   }
 }
+
+/**
+ * LoggedIn
+ */
+.logged-in__error {
+  padding: 100px 0;
+}
+
+.logged-in__error__logo {
+  width: 200px;
+}
+
+@media( min-width: 755px ) {
+  .logged-in__error__button {
+    width: 720px;
+    margin: auto;
+  }
+}
+
