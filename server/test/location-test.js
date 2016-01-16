@@ -7,7 +7,9 @@ const locations = require( '../app/models/location' );
 chai.use( chaiAsPromised );
 const expect = chai.expect;
 
-mockgoose( mongoose );
+if ( ! mongoose.isMocked ) {
+  mockgoose( mongoose );
+}
 const Location = require( '../app/models/location' ).default;
 const LocationCollection = require( '../app/models/location-collection' ).default;
 
@@ -43,6 +45,10 @@ describe( 'locations', function() {
       if ( err ) return done( err );
       done();
     } );
+  } );
+
+  after( function() {
+    mongoose.disconnect();
   } );
 
   beforeEach( function( done ) {
