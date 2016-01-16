@@ -131,3 +131,35 @@ label {
   }
 }
 
+/**
+ * Header
+ */
+.header__logo {
+  width: 100px;
+}
+
+.header__title {
+  font-size: 2em;
+  margin-top: 0px;
+}
+
+/**
+ * Library
+ */
+.library__title {
+  font-size: 1.2em;
+}
+
+/**
+ * Trip
+ */
+.trip__title {
+  font-size: 1.2em;
+}
+
+/**
+ * Footer
+ */
+.footer {
+  font-size: 1em;
+}
