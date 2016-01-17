@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { doAuth, parseAuthToken } from './lib/actions/auth';
-import { fetchLibrary } from './lib/actions/library';
+import { doAuth, parseAuthToken } from '../lib/actions/auth';
+import { fetchLibrary } from '../lib/actions/library';
 import LoggedIn from './logged-in';
 import LogInBox from './log-in-box';
 
