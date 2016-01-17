@@ -1,10 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Auth0Lock from 'auth0-lock';
 
 import LoggedIn from './logged-in';
 import LogInBox from './log-in-box';
 
-export default React.createClass( {
+const App = React.createClass( {
   componentWillMount() {
     this.createLock();
     this.setState( { idToken: this.getIdToken() } );
@@ -42,3 +43,10 @@ export default React.createClass( {
     return ( <LogInBox lock={ this.lock } /> );
   }
 } );
+
+function mapStateToProps( state ) {
+  const { auth, library, trip } = state;
+  return { auth, library, trip };
+}
+
+export default connect( mapStateToProps )( App );

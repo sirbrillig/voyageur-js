@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import reducers from './reducers';
 
 const createStoreWithMiddleware = compose(
-  applyMiddleware( thunk ),
+  applyMiddleware( thunk )
 )( createStore );
 
 export default createStoreWithMiddleware( reducers );
