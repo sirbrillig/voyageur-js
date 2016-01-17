@@ -1,6 +1,18 @@
 import { gotError } from './general';
 import { listLocations } from '../api/locations';
 
+export function addLocation( params ) {
+  return function( dispatch ) {
+    // TODO
+    const location = Object.assign( { _id: 'new-location_' + Date.now() }, params );
+    dispatch( gotNewLocation( location ) );
+  }
+}
+
+export function gotNewLocation( location ) {
+  return { type: 'LIBRARY_GOT_NEW_LOCATION', location }
+}
+
 export function hideAddLocation() {
   return { type: 'LIBRARY_HIDE_ADD_LOCATION' };
 }

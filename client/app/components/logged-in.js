@@ -3,7 +3,7 @@ import Library from './library';
 import WideButton from './wide-button';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
-import { hideAddLocation, showAddLocation } from '../lib/actions/library';
+import { addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
 
 const Header = () => <div className="header"><img className="header__logo" src="/assets/logo.png" /><h1 className="header__title">Voyageur</h1></div>;
 const Trip = () => <div className="trip col-xs-6"><h2 className="trip__title">Trip</h2></div>;
@@ -23,8 +23,12 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( showAddLocation() );
   },
 
+  onAddLocation( params ) {
+    this.props.dispatch( addLocation( params ) );
+  },
+
   renderAddLocationForm() {
-    return <AddLocationForm />;
+    return <AddLocationForm onAddLocation={ this.onAddLocation }/>;
   },
 
   renderAddLocationButton() {
