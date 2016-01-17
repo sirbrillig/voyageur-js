@@ -2,11 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { doAuth, parseAuthToken } from './lib/actions/auth';
+import { fetchLibrary } from './lib/actions/library';
 import LoggedIn from './logged-in';
 import LogInBox from './log-in-box';
 
 const App = React.createClass( {
   componentWillMount() {
+    if ( this.props.auth.token ) {
+      return this.props.dispatch( fetchLibrary() );
+    }
     this.props.dispatch( parseAuthToken() );
   },
 
@@ -16,7 +20,7 @@ const App = React.createClass( {
 
   render() {
     if ( this.props.auth.token ) {
-      return ( <LoggedIn profile={ true }/> );
+      return ( <LoggedIn ready={ true } library={ this.props.library } trip={ this.props.trip } /> );
     }
     return ( <LogInBox showAuth={ this.showAuth } /> );
   }
