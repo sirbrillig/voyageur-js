@@ -11,10 +11,12 @@
   "dependencies": {
     "auth0-lock": "^8.0.4",
     "debug": "^2.2.0",
+    "es6-promise": "^3.0.2",
     "react": "^0.14.5",
     "react-dom": "^0.14.5",
     "react-redux": "^4.0.6",
     "redux": "^3.0.5",
+    "redux-debug": "^1.0.3",
     "redux-localstorage": "^0.4.0",
     "redux-thunk": "^1.0.3",
     "superagent": "^1.6.1"
