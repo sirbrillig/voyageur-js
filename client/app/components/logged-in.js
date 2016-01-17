@@ -1,13 +1,13 @@
 import React from 'react';
 import Library from './library';
+import WideButton from './wide-button';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
-import { showAddLocation } from '../lib/actions/library';
+import { hideAddLocation, showAddLocation } from '../lib/actions/library';
 
 const Header = () => <div className="header"><img className="header__logo" src="/assets/logo.png" /><h1 className="header__title">Voyageur</h1></div>;
 const Trip = () => <div className="trip col-xs-6"><h2 className="trip__title">Trip</h2></div>;
 const Footer = () => <div className="footer">Made by Payton</div>;
-const Button = ( props ) => <button className={ `btn btn-default btn-block ${props.className}` } onClick={ props.onClick }>{ props.text }</button>;
 
 const LoggedIn = React.createClass( {
   propTypes: {
@@ -16,12 +16,20 @@ const LoggedIn = React.createClass( {
     isShowingAddLocation: React.PropTypes.bool,
   },
 
-  onShowAddLocation() {
+  toggleAddLocationForm() {
+    if ( this.props.isShowingAddLocation ) {
+      return this.props.dispatch( hideAddLocation() );
+    }
     this.props.dispatch( showAddLocation() );
   },
 
   renderAddLocationForm() {
     return <AddLocationForm />;
+  },
+
+  renderAddLocationButton() {
+    const text = this.props.isShowingAddLocation ? 'Cancel adding location' : 'Add a new location';
+    return <WideButton className="add-location-button" text={ text } onClick={ this.toggleAddLocationForm } />
   },
 
   render() {
@@ -30,7 +38,7 @@ const LoggedIn = React.createClass( {
         <Header />
         <div className="row">
           <div className="col-xs-6">
-            <Button className="add-location-button" text="Add a new location" onClick={ this.onShowAddLocation } />
+            { this.renderAddLocationButton() }
             { this.props.isShowingAddLocation ? this.renderAddLocationForm() : '' }
             <Library locations={ this.props.library } />
           </div>

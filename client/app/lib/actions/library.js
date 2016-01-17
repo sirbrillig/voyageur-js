@@ -1,6 +1,10 @@
 import { gotError } from './general';
 import { listLocations } from '../api/locations';
 
+export function hideAddLocation() {
+  return { type: 'LIBRARY_HIDE_ADD_LOCATION' };
+}
+
 export function showAddLocation() {
   return { type: 'LIBRARY_SHOW_ADD_LOCATION' };
 }

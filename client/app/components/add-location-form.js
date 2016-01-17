@@ -1,4 +1,5 @@
 import React from 'react';
+import WideButton from './wide-button';
 
 export default React.createClass( {
   render() {
@@ -18,7 +19,7 @@ export default React.createClass( {
         </div>
         <div className="form-group">
           <div className="col-sm-12">
-            <button type="submit" className="btn btn-default btn-block">Add</button>
+            <WideButton text="Add" />
           </div>
         </div>
       </div>
