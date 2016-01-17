@@ -5,8 +5,19 @@ export default React.createClass( {
     locations: React.PropTypes.array,
   },
 
+  getDefaultProps() {
+    return {
+      locations: [],
+    };
+  },
+
+  renderNoLocations() {
+    return <div className="alert alert-info">No locations added yet!</div>;
+  },
+
   renderLocations() {
-    return this.props.locations.map( this.renderLocation );
+    if ( this.props.locations.length > 0 ) return <ul>{ this.props.locations.map( this.renderLocation ) }</ul>;
+    return this.renderNoLocations();
   },
 
   renderLocation( location ) {
@@ -15,9 +26,8 @@ export default React.createClass( {
 
   render() {
     return (
-      <div className="library col-xs-6">
-        <h2 className="library__title">Library</h2>
-        <ul>{ this.renderLocations() }</ul>
+      <div className="library">
+        { this.renderLocations() }
       </div>
     );
   }
