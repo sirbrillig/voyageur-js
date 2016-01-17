@@ -1,46 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Auth0Lock from 'auth0-lock';
 
+import { doAuth, parseAuthToken } from './lib/actions/auth';
 import LoggedIn from './logged-in';
 import LogInBox from './log-in-box';
 
 const App = React.createClass( {
   componentWillMount() {
-    this.createLock();
-    this.setState( { idToken: this.getIdToken() } );
+    this.props.dispatch( parseAuthToken() );
   },
 
-  getInitialState() {
-    return {
-      idToken: {}
-    };
-  },
-
-  createLock() {
-    this.lock = new Auth0Lock( this.props.clientId, this.props.domain );
-  },
-
-  getIdToken() {
-    var idToken = localStorage.getItem( 'userToken' );
-    var authHash = this.lock.parseHash( window.location.hash );
-    if ( !idToken && authHash ) {
-      if ( authHash.id_token ) {
-        idToken = authHash.id_token
-        localStorage.setItem( 'userToken', authHash.id_token );
-      }
-      if ( authHash.error ) {
-        console.log( 'Error signing in', authHash );
-      }
-    }
-    return idToken;
+  showAuth() {
+    this.props.dispatch( doAuth() )
   },
 
   render() {
-    if ( this.state.idToken ) {
-      return ( <LoggedIn lock={ this.lock } idToken={ this.state.idToken } /> );
+    if ( this.props.auth.token ) {
+      return ( <LoggedIn profile={ true }/> );
     }
-    return ( <LogInBox lock={ this.lock } /> );
+    return ( <LogInBox showAuth={ this.showAuth } /> );
   }
 } );
 

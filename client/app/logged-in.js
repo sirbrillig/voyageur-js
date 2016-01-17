@@ -6,33 +6,11 @@ const Trip = () => <div className="trip col-xs-6"><h2 className="trip__title">Tr
 const Footer = () => <div className="footer">Made by Payton</div>;
 
 export default React.createClass( {
-  propTypes: {
-    lock: React.PropTypes.object.isRequired,
-    idToken: React.PropTypes.string.isRequired
-  },
-
-  getInitialState() {
-    return {
-      profile: null
-    }
-  },
-
-  componentWillMount() {
-    this.props.lock.getProfile( this.props.idToken, ( err, profile ) => {
-      if ( err ) {
-        console.log( 'Error loading the Profile', err );
-        if ( window ) window.location = '/';
-        return;
-      }
-      this.setState( { profile: profile } );
-    } );
-  },
-
   render() {
-    if ( this.state.profile ) {
+    if ( this.props.profile ) {
       return (
         <div className="logged-in">
-          <Header profile={ this.state.profile }/>
+          <Header />
           <div className="row">
             <Library />
             <Trip />
