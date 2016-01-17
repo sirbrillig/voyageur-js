@@ -37,27 +37,6 @@ input[type=radio]:focus + label:before,
 input[type=checkbox]:focus + label:before {
   outline: 0;
 }
-.btn {
-  font-size: 140%;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border: 0;
-  background-color: #16214D;
-  color: white;
-}
-.btn:hover {
-  background-color: #44C7F4;
-}
-.btn:focus {
-  outline: none !important;
-}
-.btn.btn-lg {
-  padding: 20px 30px;
-}
-.btn:disabled {
-  background-color: #333;
-  color: #666;
-}
 h1,
 h2,
 h3 {
@@ -106,6 +85,27 @@ label {
   font-size: 2em;
 }
 
+.log-in-box__button {
+  font-size: 140%;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 0;
+  background-color: #16214D;
+  color: white;
+}
+
+.log-in-box__button:hover {
+  background-color: #44C7F4;
+}
+
+.log-in-box__button:focus {
+  outline: none !important;
+}
+
+.log-in-box__button.btn-lg {
+  padding: 20px 30px;
+}
+
 @media( min-width: 755px ) {
   .log-in-box__button {
     width: 720px;
@@ -122,6 +122,27 @@ label {
 
 .logged-in__error__logo {
   width: 200px;
+}
+
+.logged-in_error__button {
+  font-size: 140%;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 0;
+  background-color: #16214D;
+  color: white;
+}
+
+.logged-in_error__button:hover {
+  background-color: #44C7F4;
+}
+
+.logged-in_error__button:focus {
+  outline: none !important;
+}
+
+.logged-in_error__button.btn-lg {
+  padding: 20px 30px;
 }
 
 @media( min-width: 755px ) {
