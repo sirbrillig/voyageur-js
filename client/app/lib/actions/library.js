@@ -1,7 +1,15 @@
+import { gotError } from './general';
+import { listLocations } from '../api/locations';
+
 export function fetchLibrary() {
-  return function( dispatch ) {
-    const locations = [ { _id: 1, name: 'Home', address: '123 home place' } ];
-    dispatch( gotLibrary( locations ) );
+  return function( dispatch, getState ) {
+    listLocations( getState().auth.token )
+    .then( ( locations ) => {
+      dispatch( gotLibrary( locations ) );
+    } )
+    .catch( ( err ) => {
+      dispatch( gotError( err ) );
+    } );
   }
 }
 
