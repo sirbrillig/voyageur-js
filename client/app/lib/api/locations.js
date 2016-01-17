@@ -16,3 +16,18 @@ export function listLocations( token ) {
     } );
   } );
 }
+
+export function createNewLocation( token, params ) {
+  return new Promise( ( resolve, reject ) => {
+    const url = `${baseUrl}/secured/locations`;
+    request.post( url )
+    .send( params )
+    .set( 'Authorization', `Bearer ${token}` )
+    .end( ( err, res ) => {
+      const data = res.body;
+      if ( err ) return reject( err );
+      if ( ! data ) return reject( 'No data found in response' );
+      return resolve( data );
+    } );
+  } );
+}

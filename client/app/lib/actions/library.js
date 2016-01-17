@@ -1,10 +1,12 @@
 import { gotError } from './general';
-import { listLocations } from '../api/locations';
+import { createNewLocation, listLocations } from '../api/locations';
 
 export function addLocation( params ) {
-  return function( dispatch ) {
-    // TODO
-    const location = Object.assign( { _id: 'new-location_' + Date.now() }, params );
+  return function( dispatch, getState ) {
+    createNewLocation( getState().auth.token, params )
+    .then( () => dispatch( fetchLibrary() ) )
+    .catch( ( err ) => dispatch( gotError( err ) ) );
+    const location = Object.assign( { _id: 'new-location_' + Date.now(), isLoading: true }, params );
     dispatch( gotNewLocation( location ) );
   }
 }
