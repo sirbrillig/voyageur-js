@@ -47,7 +47,7 @@ export default React.createClass( {
         </div>
         <div className="form-group">
           <div className="col-sm-12">
-            <WideButton text="Add" onClick={ this.onAddLocation } />
+            <WideButton text="Add" className="btn-primary" onClick={ this.onAddLocation } />
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ const LibraryLocation = ( props ) => {
         <p className="library-location__description__address">{ props.location.address }</p>
       </div>
       <div className="library-location__controls col-xs-4" >
-        { props.location.isLoading ? <span className="glyphicon glyphicon-refresh" /> : '' }
+        { props.location.isLoading ? <span className="library-location__loading glyphicon glyphicon-refresh glyphicon-spin" /> : '' }
       </div>
     </li>
   );
