@@ -4,6 +4,7 @@ import LibraryLocation from './library-location';
 export default React.createClass( {
   propTypes: {
     locations: React.PropTypes.array,
+    onAddToTrip: React.PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
@@ -34,7 +35,7 @@ export default React.createClass( {
   },
 
   renderLocation( location ) {
-    return <LibraryLocation key={ location._id } location={ location } />;
+    return <LibraryLocation key={ location._id } location={ location } onAddToTrip={ this.props.onAddToTrip } />;
   },
 
   render() {
