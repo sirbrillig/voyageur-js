@@ -3,6 +3,7 @@ import React from 'react';
 export default React.createClass( {
   propTypes: {
     tripLocation: React.PropTypes.object.isRequired,
+    onRemoveTripLocation: React.PropTypes.func.isRequired,
   },
 
   renderControls() {
@@ -11,7 +12,7 @@ export default React.createClass( {
     }
     return (
       <div className="btn-group btn-group-sm" role="group">
-        <button className="btn btn-default">Remove</button>
+        <button className="btn btn-default" onClick={ () => this.props.onRemoveTripLocation( this.props.tripLocation._id ) }>Remove</button>
       </div>
     );
   },

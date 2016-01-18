@@ -6,7 +6,7 @@ import Trip from './trip';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
 import { fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
-import { addToTrip, fetchTrip } from '../lib/actions/trip';
+import { addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 import { clearNotices } from '../lib/actions/general';
 
 const Footer = () => <div className="footer">Made by Payton</div>;
@@ -45,6 +45,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( addToTrip( location ) );
   },
 
+  onRemoveTripLocation( tripLocation ) {
+    this.props.dispatch( removeTripLocation( tripLocation ) );
+  },
+
   onClearNotices() {
     this.props.dispatch( clearNotices() );
   },
@@ -69,7 +73,7 @@ const LoggedIn = React.createClass( {
             <Library locations={ this.props.library } onAddToTrip={ this.onAddToTrip } />
           </div>
           <div className="col-xs-6">
-            <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } />
+            <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
           </div>
         </div>
         <Footer />

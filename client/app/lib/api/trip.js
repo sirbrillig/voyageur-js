@@ -32,3 +32,16 @@ export function createNewTripLocation( token, params ) {
   } );
 }
 
+export function deleteTripLocation( token, tripLocationId ) {
+  return new Promise( ( resolve, reject ) => {
+    const url = `${baseUrl}/secured/trip-locations/${tripLocationId}`;
+    request.delete( url )
+    .set( 'Authorization', `Bearer ${token}` )
+    .end( ( err, res ) => {
+      if ( err ) return reject( err );
+      const data = res.body;
+      if ( ! data ) return reject( 'No data found in response' );
+      return resolve( data );
+    } );
+  } );
+}
