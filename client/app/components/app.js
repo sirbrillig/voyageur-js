@@ -14,6 +14,10 @@ const App = React.createClass( {
     this.props.dispatch( parseAuthToken() );
   },
 
+  componentDidUpdate() {
+    return this.props.dispatch( fetchLibrary() );
+  },
+
   showAuth() {
     this.props.dispatch( doAuth() )
   },
