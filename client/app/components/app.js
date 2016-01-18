@@ -20,15 +20,15 @@ const App = React.createClass( {
 
   render() {
     if ( this.props.auth.token ) {
-      return ( <LoggedIn ready={ true } library={ this.props.library } trip={ this.props.trip } /> );
+      return ( <LoggedIn /> );
     }
     return ( <LogInBox showAuth={ this.showAuth } /> );
   }
 } );
 
 function mapStateToProps( state ) {
-  const { auth, library, trip } = state;
-  return { auth, library, trip };
+  const { auth } = state;
+  return { auth };
 }
 
 export default connect( mapStateToProps )( App );
