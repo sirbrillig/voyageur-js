@@ -9,8 +9,8 @@ export function listLocations( token ) {
     request.get( listLocationsUrl )
     .set( 'Authorization', `Bearer ${token}` )
     .end( ( err, res ) => {
-      const data = res.body;
       if ( err ) return reject( err );
+      const data = res.body;
       if ( ! data ) return reject( 'No data found in response' );
       return resolve( data );
     } );
@@ -24,8 +24,8 @@ export function createNewLocation( token, params ) {
     .send( params )
     .set( 'Authorization', `Bearer ${token}` )
     .end( ( err, res ) => {
-      const data = res.body;
       if ( err ) return reject( err );
+      const data = res.body;
       if ( ! data ) return reject( 'No data found in response' );
       return resolve( data );
     } );

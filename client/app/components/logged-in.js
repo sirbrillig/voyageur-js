@@ -1,11 +1,12 @@
 import React from 'react';
 import Library from './library';
 import WideButton from './wide-button';
+import Header from './header';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
 import { addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
+import { clearNotices } from '../lib/actions/general';
 
-const Header = () => <div className="header"><img className="header__logo" src="/assets/logo.png" /><h1 className="header__title">Voyageur</h1></div>;
 const Trip = () => <div className="trip col-xs-6"><h2 className="trip__title">Trip</h2></div>;
 const Footer = () => <div className="footer">Made by Payton</div>;
 
@@ -27,6 +28,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( addLocation( params ) );
   },
 
+  onClearNotices() {
+    this.props.dispatch( clearNotices() );
+  },
+
   renderAddLocationForm() {
     return <AddLocationForm onAddLocation={ this.onAddLocation }/>;
   },
@@ -39,7 +44,7 @@ const LoggedIn = React.createClass( {
   render() {
     return (
       <div className="logged-in">
-        <Header />
+        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } />
         <div className="row">
           <div className="col-xs-6">
             { this.renderAddLocationButton() }
@@ -55,8 +60,8 @@ const LoggedIn = React.createClass( {
 } );
 
 function mapStateToProps( state ) {
-  const { library, trip, ui } = state;
-  return { library, trip, isShowingAddLocation: ui.isShowingAddLocation };
+  const { library, trip, ui, notices } = state;
+  return { library, trip, isShowingAddLocation: ui.isShowingAddLocation, notices };
 }
 
 export default connect( mapStateToProps )( LoggedIn );

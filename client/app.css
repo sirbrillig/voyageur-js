@@ -108,6 +108,10 @@ ul {
   margin-top: 0px;
 }
 
+.notices__clear {
+  margin-bottom: 5px;
+}
+
 /**
  * Library
  */
@@ -127,7 +131,7 @@ ul {
 }
 
 .library-location__controls {
-  padding: 30px;
+  padding-top: 30px;
   text-align: right;
 }
 

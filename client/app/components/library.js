@@ -1,18 +1,5 @@
 import React from 'react';
-
-const LibraryLocation = ( props ) => {
-  return (
-    <li className="library-location row well well-sm" >
-      <div className="library-location__description col-xs-8" >
-        <h3 className="library-location__description__name">{ props.location.name }</h3>
-        <p className="library-location__description__address">{ props.location.address }</p>
-      </div>
-      <div className="library-location__controls col-xs-4" >
-        { props.location.isLoading ? <span className="library-location__loading glyphicon glyphicon-refresh glyphicon-spin" /> : '' }
-      </div>
-    </li>
-  );
-}
+import LibraryLocation from './library-location';
 
 export default React.createClass( {
   propTypes: {
