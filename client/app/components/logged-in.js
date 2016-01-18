@@ -2,12 +2,12 @@ import React from 'react';
 import Library from './library';
 import WideButton from './wide-button';
 import Header from './header';
+import Trip from './trip';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
-import { addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
+import { addToTrip, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
 import { clearNotices } from '../lib/actions/general';
 
-const Trip = () => <div className="trip col-xs-6"><h2 className="trip__title">Trip</h2></div>;
 const Footer = () => <div className="footer">Made by Payton</div>;
 
 const LoggedIn = React.createClass( {
@@ -26,6 +26,10 @@ const LoggedIn = React.createClass( {
 
   onAddLocation( params ) {
     this.props.dispatch( addLocation( params ) );
+  },
+
+  onAddToTrip( location ) {
+    this.props.dispatch( addToTrip( location ) );
   },
 
   onClearNotices() {
@@ -49,9 +53,11 @@ const LoggedIn = React.createClass( {
           <div className="col-xs-6">
             { this.renderAddLocationButton() }
             { this.props.isShowingAddLocation ? this.renderAddLocationForm() : '' }
-            <Library locations={ this.props.library } />
+            <Library locations={ this.props.library } onAddToTrip={ this.onAddToTrip } />
           </div>
-          <Trip triplocations={ this.props.trip }/>
+          <div className="col-xs-6">
+            <Trip tripLocations={ this.props.trip }/>
+          </div>
         </div>
         <Footer />
       </div>

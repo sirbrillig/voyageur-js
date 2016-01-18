@@ -177,6 +177,26 @@ ul {
   font-size: 1.2em;
 }
 
+.trip-location {
+  list-style: none;
+  text-align: left;
+  padding: 5px 0;
+  margin: 5px 0px;
+}
+
+.trip-location__controls {
+  padding-top: 30px;
+  text-align: right;
+}
+
+.trip-location__loading {
+  color: #999;
+}
+
+.trip-location__description__name {
+  margin: 10px 0px;
+}
+
 /**
  * Footer
  */
