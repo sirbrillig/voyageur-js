@@ -2,20 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { doAuth, parseAuthToken } from '../lib/actions/auth';
-import { fetchLibrary } from '../lib/actions/library';
 import LoggedIn from './logged-in';
 import LogInBox from './log-in-box';
 
 const App = React.createClass( {
   componentWillMount() {
-    if ( this.props.auth.token ) {
-      return this.props.dispatch( fetchLibrary() );
+    if ( ! this.props.auth.token ) {
+      this.props.dispatch( parseAuthToken() );
     }
-    this.props.dispatch( parseAuthToken() );
-  },
-
-  componentDidUpdate() {
-    return this.props.dispatch( fetchLibrary() );
   },
 
   showAuth() {

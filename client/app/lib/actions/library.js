@@ -1,18 +1,6 @@
 import { gotError } from './general';
 import { createNewLocation, listLocations } from '../api/locations';
 
-export function addToTrip( location ) {
-  return function( dispatch ) {
-    // TODO: send to api
-    const tripLocation = Object.assign( { _id: 'new-trip-location_' + Date.now(), isLoading: true, location } );
-    dispatch( gotNewTripLocation( tripLocation ) );
-  }
-}
-
-export function gotNewTripLocation( tripLocation ) {
-  return { type: 'TRIP_GOT_NEW_TRIP_LOCATION', tripLocation };
-}
-
 export function addLocation( params ) {
   return function( dispatch, getState ) {
     if ( ! params.name || ! params.address ) return dispatch( gotError( 'Locations must have a name and an address' ) );

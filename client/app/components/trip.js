@@ -4,6 +4,7 @@ import TripLocation from './trip-location';
 export default React.createClass( {
   propTypes: {
     tripLocations: React.PropTypes.array,
+    getLocationById: React.PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
@@ -17,6 +18,11 @@ export default React.createClass( {
   },
 
   renderTripLocation( tripLocation ) {
+    if ( ! tripLocation.location.name ) {
+      const location = this.props.getLocationById( tripLocation.location );
+      if ( ! location ) return; // Don't render tripLocations without a corresponding location
+      tripLocation.location = location;
+    }
     return <TripLocation key={ tripLocation._id } tripLocation={ tripLocation } />;
   },
 
