@@ -3,7 +3,7 @@ import { createNewLocation, listLocations } from '../api/locations';
 
 export function addLocation( params ) {
   return function( dispatch, getState ) {
-    if ( ! params.user || ! params.address ) return dispatch( gotError( 'Locations must have a name and an address' ) );
+    if ( ! params.name || ! params.address ) return dispatch( gotError( 'Locations must have a name and an address' ) );
     createNewLocation( getState().auth.token, params )
     .then( () => dispatch( fetchLibrary() ) )
     .catch( ( err ) => dispatch( gotError( err ) ) );
