@@ -28,14 +28,18 @@ export function getDistanceBetween( userId, origin, destination ) {
 
 function createNewDistance( userId, origin, destination ) {
   return new Promise( ( resolve, reject ) => {
-    fetchDistanceBetween( origin.address, destination.address )
+    Promise.all( [ origin, destination ].map( locationId => getLocationForUser( userId, locationId ) ) )
+    .then( ( [ originLocation, destinationLocation ] ) => {
+      return fetchDistanceBetween( originLocation.address, destinationLocation.address );
+    } )
     .then( distance => {
       const newDistance = new Distance( { userId, origin, destination, distance } );
       newDistance.save( ( err ) => {
         if ( err ) return reject( err );
         resolve( newDistance.distance );
       } );
-    } );
+    } )
+    .catch( reject );
   } );
 }
 

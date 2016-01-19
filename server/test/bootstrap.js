@@ -32,7 +32,6 @@ export const mockLocations = {
 };
 
 export const mockDistances = {
-  homeWorkDistance: null,
 };
 
 export const mockTripLocations = {
@@ -52,10 +51,11 @@ export const mockTrips = {
 };
 
 export function populateDb( done ) {
-  mockLocations.homeLocation = new Location( { userId: mockUsers.testUserId, name: 'foo', address: 'bar' } );
-  mockLocations.coffeeLocation = new Location( { userId: mockUsers.testUserId, name: 'coffee', address: 'bar' } );
-  mockLocations.beachLocation = new Location( { userId: mockUsers.testUserId, name: 'beach', address: 'bar' } );
+  mockLocations.homeLocation = new Location( { userId: mockUsers.testUserId, name: 'foo', address: '123 home drive' } );
+  mockLocations.coffeeLocation = new Location( { userId: mockUsers.testUserId, name: 'coffee', address: '123 coffee place' } );
+  mockLocations.beachLocation = new Location( { userId: mockUsers.testUserId, name: 'beach', address: '123 beach place' } );
   mockLocations.gameLocation = new Location( { userId: mockUsers.testUserId, name: 'games', address: 'funplace' } );
+
   mockLocations.workLocation = new Location( { userId: mockUsers.testUserId2, name: 'work', address: 'workplace' } );
   mockLocations.foodLocation = new Location( { userId: mockUsers.testUserId2, name: 'food', address: 'foodplace' } );
   mockLocations.teaLocation = new Location( { userId: mockUsers.testUserId2, name: 'tea', address: 'teaplace' } );
@@ -66,7 +66,6 @@ export function populateDb( done ) {
   mockTripLocations.teaTripLocation = new TripLocation( { userId: mockUsers.testUserId2, location: mockLocations.teaLocation } );
   mockTripLocations.foodTripLocation = new TripLocation( { userId: mockUsers.testUserId2, location: mockLocations.foodLocation } );
 
-  mockDistances.homeWorkDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.homeLocation, destination: mockLocations.workLocation, distance: 100 } );
   mockDistances.homeCoffeeDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.homeLocation, destination: mockLocations.coffeeLocation, distance: 600 } );
   mockDistances.coffeeBeachDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.coffeeLocation, destination: mockLocations.beachLocation, distance: 400 } );
   mockDistances.teaFoodDistance = new Distance( { userId: mockUsers.testUserId2, origin: mockLocations.teaLocation, destination: mockLocations.foodLocation, distance: 2000 } );
@@ -84,7 +83,6 @@ export function populateDb( done ) {
   .then( mockLocations.gameLocation.save )
   .then( mockLocations.foodLocation.save )
   .then( mockLocations.teaLocation.save )
-  .then( mockDistances.homeWorkDistance.save )
   .then( mockDistances.homeCoffeeDistance.save )
   .then( mockDistances.coffeeBeachDistance.save )
   .then( mockDistances.teaFoodDistance.save )

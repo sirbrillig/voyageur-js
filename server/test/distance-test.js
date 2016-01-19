@@ -27,16 +27,23 @@ describe( 'distances', function() {
 
   describe( '.getDistanceBetween', function() {
     it( 'returns the distance between the origin and destination if the distance is cached', function() {
-      return getDistanceBetween( mockUsers.testUserId, mockLocations.homeLocation._id, mockLocations.workLocation._id )
+      return getDistanceBetween( mockUsers.testUserId, mockLocations.homeLocation._id, mockLocations.coffeeLocation._id )
       .then( function( data ) {
-        expect( data.distance ).to.eql( 100 );
+        expect( data.distance ).to.eql( 600 );
       } );
     } );
 
     it( 'fetches the distance between the origin and destination if the distance is not cached', function() {
-      return getDistanceBetween( mockUsers.testUserId, mockLocations.gameLocation._id, mockLocations.workLocation._id )
+      return getDistanceBetween( mockUsers.testUserId, mockLocations.gameLocation._id, mockLocations.homeLocation._id )
       .then( function( data ) {
         expect( data.distance ).to.eql( 200 );
+      } );
+    } );
+
+    it( 'calls fetchDistanceBetween with the correct arguments if the distance is not cached', function() {
+      return getDistanceBetween( mockUsers.testUserId, mockLocations.gameLocation._id, mockLocations.homeLocation._id )
+      .then( function() {
+        expect( helpers.fetchDistanceBetween.calledWith( mockLocations.gameLocation.address, mockLocations.homeLocation.address ) ).to.be.true;
       } );
     } );
   } );
