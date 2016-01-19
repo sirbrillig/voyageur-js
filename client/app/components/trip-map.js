@@ -45,17 +45,24 @@ export default React.createClass( {
     this.requestDirections( request );
   },
 
-  requestDirections: function( request ) {
+  requestDirections( request ) {
     const directionsService = new gmaps.DirectionsService();
     directionsService.route( request, this.updateDirectionsOnMap );
   },
 
-  updateDirectionsOnMap: function( result, status ) {
+  updateDirectionsOnMap( result, status ) {
     if ( status === gmaps.DirectionsStatus.OK ) {
       this.setState( { directions: result } );
     } else {
       console.error( 'error loading directions', result );
     }
+  },
+
+  handleMapClick() {
+    const mapUrl = 'https://www.google.com/maps/dir/' + this.getAddresses().reduce( ( previous, address ) => {
+      return previous + encodeURIComponent( address ) + '/';
+    }, '' );
+    window.location = mapUrl;
   },
 
   renderDirections() {
@@ -74,6 +81,7 @@ export default React.createClass( {
       streetViewControl={ false }
       zoomControl={ false }
       mapTypeControl={ false }
+      onClick={ this.handleMapClick }
     >
     { this.renderDirections() }
     </GoogleMap>
