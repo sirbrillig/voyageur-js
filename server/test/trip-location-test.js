@@ -80,14 +80,14 @@ describe( 'tripLocations', function() {
     } );
 
     it( 'returns an array with all current TripLocations', function() {
-      tripLocations.listTripLocationsForUser( testUserId2 )
+      return tripLocations.listTripLocationsForUser( testUserId2 )
       .then( function( data ) {
-        expect( data.map( x => x.location ) ).to.equal( testUserTrip2.tripLocations.map( x => x.location ) );
+        expect( data.map( x => x.location ) ).to.eql( testUserTrip2.tripLocations.map( x => x.location._id ) );
       } );
     } );
 
     it( 'returns an array that does not include TripLocations from other users', function() {
-      tripLocations.listTripLocationsForUser( testUserId )
+      return tripLocations.listTripLocationsForUser( testUserId )
       .then( function( data ) {
         expect( data ).to.be.empty;
       } );
@@ -97,15 +97,15 @@ describe( 'tripLocations', function() {
   describe( '.addLocationToTrip', function() {
     it( 'creates a new TripLocation with the parameters specified', function() {
       const params = { location: gameLocation._id };
-      tripLocations.addLocationToTrip( testUserId, params )
+      return tripLocations.addLocationToTrip( testUserId, params )
       .then( function( data ) {
-        expect( data.location ).to.equal( params.location );
+        expect( data.location ).to.eql( params.location );
       } );
     } );
 
     it( 'creates a new TripLocation without non-whitelisted parameters', function() {
       const params = { foo: 'bar', location: gameLocation._id };
-      tripLocations.addLocationToTrip( testUserId, params )
+      return tripLocations.addLocationToTrip( testUserId, params )
       .then( function( data ) {
         expect( data.foo ).to.not.exist;
       } );
@@ -113,11 +113,11 @@ describe( 'tripLocations', function() {
 
     it( 'adds the TripLocation to the end of the user\'s list', function() {
       const params = { location: workLocation._id };
-      tripLocations.addLocationToTrip( testUserId2, params )
-      .then( () => tripLocations.listTripLocationsForUser( testUserId ) )
+      return tripLocations.addLocationToTrip( testUserId2, params )
+      .then( () => tripLocations.listTripLocationsForUser( testUserId2 ) )
       .then( function( data ) {
         const last = data[ data.length - 1 ];
-        expect( last.location ).to.equal( params.location );
+        expect( last.location ).to.eql( params.location );
       } );
     } );
   } );
