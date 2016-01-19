@@ -3,6 +3,7 @@ import Library from './library';
 import WideButton from './wide-button';
 import Header from './header';
 import Trip from './trip';
+import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
 import { fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
@@ -62,6 +63,11 @@ const LoggedIn = React.createClass( {
     return <WideButton className="add-location-button" text={ text } onClick={ this.toggleAddLocationForm } />
   },
 
+  renderMap() {
+    if ( this.props.trip.length < 2 ) return;
+    return <TripMap />;
+  },
+
   render() {
     return (
       <div className="logged-in">
@@ -73,6 +79,7 @@ const LoggedIn = React.createClass( {
             <Library locations={ this.props.library } onAddToTrip={ this.onAddToTrip } />
           </div>
           <div className="col-xs-6">
+            { this.renderMap() }
             <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
           </div>
         </div>
