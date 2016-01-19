@@ -1,6 +1,7 @@
 import express from 'express';
 import locations from './routes/locations';
 import tripLocations from './routes/trip-locations';
+import distances from './routes/distances';
 
 const router = express.Router();
 
@@ -30,5 +31,8 @@ router.route( '/secured/trip-locations' )
 router.route( '/secured/trip-locations/:tripLocationId' )
 .get( tripLocations.get )
 .delete( tripLocations.delete );
+
+router.route( '/secured/distances/:originId/:destinationId' )
+.get( distances.get )
 
 export default router;
