@@ -65,7 +65,7 @@ const LoggedIn = React.createClass( {
 
   renderMap() {
     if ( this.props.trip.length < 2 ) return;
-    return <TripMap />;
+    return <TripMap tripLocations={ this.props.trip } getLocationById={ this.getLocationById } />;
   },
 
   render() {
