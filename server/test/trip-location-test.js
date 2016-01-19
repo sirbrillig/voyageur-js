@@ -34,7 +34,7 @@ describe( 'tripLocations', function() {
     it( 'returns an array that does not include TripLocations from other users', function() {
       return tripLocations.listTripLocationsForUser( mockUsers.testUserId )
       .then( function( data ) {
-        expect( data ).to.be.empty;
+        expect( data.map( x => x.location ) ).to.eql( mockTrips.testUserTrip.tripLocations.map( x => x.location._id ) );
       } );
     } );
   } );
@@ -82,10 +82,15 @@ describe( 'tripLocations', function() {
     } );
 
     it( 'removes the TripLocation from the user\'s trip', function() {
+      const currentTripLocations = mockTrips.testUserTrip2.tripLocations.map( x => x._id )
+      .reduce( ( prev, next ) => {
+        if ( next === mockTripLocations.teaTripLocation._id ) return prev;
+        return prev.concat( next );
+      }, [] );
       return tripLocations.removeTripLocationForUser( mockUsers.testUserId2, mockTripLocations.teaTripLocation )
-      .then( () => tripLocations.listTripLocationsForUser( mockUsers.testUserId ) )
+      .then( () => tripLocations.listTripLocationsForUser( mockUsers.testUserId2 ) )
       .then( function( data ) {
-        expect( data ).to.be.empty;
+        expect( data.map( x => x._id ) ).to.eql( currentTripLocations );
       } );
     } );
 

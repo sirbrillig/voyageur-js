@@ -18,7 +18,7 @@ export default {
   get( req, res ) {
     const userId = getUserIdFromRequest( req );
     const { originId, destinationId } = req.params;
-    getDistanceBetween( originId, destinationId )
+    getDistanceBetween( userId, originId, destinationId )
     .then( ( distance ) => {
       log.info( { userId, event: 'get', data: { originId, destinationId } } );
       res.status( 200 ).json( distance );
