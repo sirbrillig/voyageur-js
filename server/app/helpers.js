@@ -1,6 +1,10 @@
 import { Promise } from 'es6-promise';
 import distance from 'google-distance';
-distance.apiKey = 'AIzaSyBNDQ3-gE2fMeBUN_X1ELPoMxm8AQiYQOo';
+import dotenv from 'dotenv';
+
+dotenv.load();
+
+distance.apiKey = process.env.GOOGLE_DISTANCE_API_KEY;
 
 export function getUserIdFromRequest( req ) {
   return req.user.sub;

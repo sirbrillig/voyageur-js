@@ -1,5 +1,5 @@
 import { gotError } from './general';
-import { deleteTripLocation, createNewTripLocation, listTripLocations } from '../api/trip';
+import { getTripDistance, deleteTripLocation, createNewTripLocation, listTripLocations } from '../api/trip';
 
 export function removeTripLocation( tripLocationId ) {
   return function( dispatch, getState ) {
@@ -27,9 +27,24 @@ export function gotNewTripLocation( tripLocation ) {
 export function fetchTrip() {
   return function( dispatch, getState ) {
     listTripLocations( getState().auth.token )
-    .then( ( tripLocations ) => dispatch( gotTrip( tripLocations ) ) )
-    .catch( ( err ) => dispatch( gotError( err ) ) );
+    .then( tripLocations => {
+      dispatch( gotTrip( tripLocations ) )
+      dispatch( fetchDistance() )
+    } )
+    .catch( err => dispatch( gotError( err ) ) );
   }
+}
+
+export function fetchDistance() {
+  return function( dispatch, getState ) {
+    getTripDistance( getState().auth.token )
+    .then( data => dispatch( gotDistance( data.distance ) ) )
+    .catch( err => dispatch( gotError( err ) ) );
+  }
+}
+
+export function gotDistance( distance ) {
+  return { type: 'TRIP_GOT_DISTANCE', distance };
 }
 
 export function gotTrip( trip ) {
