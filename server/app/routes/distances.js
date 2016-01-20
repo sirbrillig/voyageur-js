@@ -2,7 +2,7 @@ import logStream from 'bunyan-mongodb-stream';
 import bunyan from 'bunyan';
 import Log from '../models/log';
 import { getUserIdFromRequest } from '../helpers';
-import { getDistanceBetween } from '../models/distance';
+import { getDistanceForUser } from '../models/distance';
 
 const LogEntryStream = logStream( { model: Log } );
 const log = bunyan.createLogger( {
@@ -17,14 +17,13 @@ const log = bunyan.createLogger( {
 export default {
   get( req, res ) {
     const userId = getUserIdFromRequest( req );
-    const { originId, destinationId } = req.params;
-    getDistanceBetween( userId, originId, destinationId )
+    getDistanceForUser( userId )
     .then( ( distance ) => {
-      log.info( { userId, event: 'get', data: { originId, destinationId } } );
+      log.info( { userId, event: 'get', data: { userId } } );
       res.status( 200 ).json( distance );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'create', data: { originId, destinationId } }, err.message );
+      log.error( { userId, event: 'create', data: { userId } }, err.message );
       res.status( 502 ).send( err );
     } );
   }

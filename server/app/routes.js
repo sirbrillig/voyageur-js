@@ -32,7 +32,7 @@ router.route( '/secured/trip-locations/:tripLocationId' )
 .get( tripLocations.get )
 .delete( tripLocations.delete );
 
-router.route( '/secured/distances/:originId/:destinationId' )
+router.route( '/secured/distance' )
 .get( distances.get )
 
 export default router;
