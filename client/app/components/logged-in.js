@@ -7,7 +7,7 @@ import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
 import { fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
-import { addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
+import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 import { clearNotices } from '../lib/actions/general';
 
 const Footer = () => <div className="footer">Made by Payton</div>;
@@ -55,6 +55,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( clearNotices() );
   },
 
+  onClearTrip() {
+    this.props.dispatch( clearTrip() );
+  },
+
   renderAddLocationForm() {
     return <AddLocationForm onAddLocation={ this.onAddLocation }/>;
   },
@@ -80,6 +84,7 @@ const LoggedIn = React.createClass( {
             <Library locations={ this.props.library } onAddToTrip={ this.onAddToTrip } />
           </div>
           <div className="col-xs-6">
+            <WideButton className="clear-trip-button" text="Clear trip" onClick={ this.onClearTrip } />
             { this.renderMap() }
             <Distance meters={ this.props.distance } />
             <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />

@@ -7,6 +7,7 @@ import {
   listTripLocationsForUser,
   addLocationToTrip,
   getTripLocationForUser,
+  removeAllTripLocations,
   removeTripLocationForUser,
   updateTripForUser,
 } from '../models/trip-location';
@@ -73,6 +74,19 @@ export default {
     } )
     .catch( ( err ) => {
       log.error( { userId, event: 'updateList', data: { tripLocationIds } }, err.message );
+      res.status( 502 ).send( err );
+    } );
+  },
+
+  deleteAll( req, res ) {
+    const userId = getUserIdFromRequest( req );
+    removeAllTripLocations( userId )
+    .then( ( tripLocations ) => {
+      log.info( { userId, event: 'deleteAll', data: { userId } } );
+      res.status( 200 ).json( tripLocations );
+    } )
+    .catch( ( err ) => {
+      log.error( { userId, event: 'deleteAll', data: { userId } }, err.message );
       res.status( 502 ).send( err );
     } );
   },

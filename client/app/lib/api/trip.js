@@ -59,3 +59,17 @@ export function getTripDistance( token ) {
     } );
   } );
 }
+
+export function removeAllTripLocations( token ) {
+  return new Promise( ( resolve, reject ) => {
+    const url = `${baseUrl}/secured/trip-locations`;
+    request.delete( url )
+    .set( 'Authorization', `Bearer ${token}` )
+    .end( ( err, res ) => {
+      if ( err ) return reject( err );
+      const data = res.body;
+      if ( ! data ) return reject( 'No data found in response' );
+      return resolve( data );
+    } );
+  } );
+}

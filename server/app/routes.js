@@ -25,6 +25,7 @@ router.route( '/secured/locations/:locationId' )
 
 router.route( '/secured/trip-locations' )
 .get( tripLocations.list )
+.delete( tripLocations.deleteAll )
 .post( tripLocations.create )
 .put( tripLocations.updateList );
 

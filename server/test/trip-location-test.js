@@ -67,6 +67,31 @@ describe( 'tripLocations', function() {
     } );
   } );
 
+  describe( '.removeAllTripLocations', function() {
+    it( 'removes all the TripLocations for the user', function() {
+      return tripLocations.removeAllTripLocations( mockUsers.testUserId2 )
+      .then( () => tripLocations.listTripLocationsForUser( mockUsers.testUserId2 ) )
+      .then( ( data ) => {
+        expect( data ).to.be.empty;
+      } );
+    } );
+
+    it( 'does not remove TripLocations for other users', function() {
+      return tripLocations.removeAllTripLocations( mockUsers.testUserId2 )
+      .then( () => tripLocations.listTripLocationsForUser( mockUsers.testUserId ) )
+      .then( ( data ) => {
+        expect( data ).to.not.be.empty;
+      } );
+    } );
+
+    it( 'returns the empty list', function() {
+      return tripLocations.removeAllTripLocations( mockUsers.testUserId2 )
+      .then( ( data ) => {
+        expect( data ).to.be.empty;
+      } );
+    } );
+  } );
+
   describe( '.removeTripLocationForUser', function() {
     it( 'removes the TripLocation from the database', function() {
       let locationCount = 0;
