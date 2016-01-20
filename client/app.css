@@ -197,6 +197,14 @@ ul {
   margin: 10px 0px;
 }
 
+.trip-map {
+  height: 150px;
+}
+
+.distance {
+  margin: 0;
+}
+
 /**
  * Footer
  */

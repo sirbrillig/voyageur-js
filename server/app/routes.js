@@ -1,6 +1,7 @@
 import express from 'express';
 import locations from './routes/locations';
 import tripLocations from './routes/trip-locations';
+import distances from './routes/distances';
 
 const router = express.Router();
 
@@ -24,11 +25,15 @@ router.route( '/secured/locations/:locationId' )
 
 router.route( '/secured/trip-locations' )
 .get( tripLocations.list )
+.delete( tripLocations.deleteAll )
 .post( tripLocations.create )
 .put( tripLocations.updateList );
 
 router.route( '/secured/trip-locations/:tripLocationId' )
 .get( tripLocations.get )
 .delete( tripLocations.delete );
+
+router.route( '/secured/distance' )
+.get( distances.get )
 
 export default router;

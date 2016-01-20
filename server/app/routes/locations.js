@@ -1,15 +1,14 @@
 import logStream from 'bunyan-mongodb-stream';
 import bunyan from 'bunyan';
-
 import Log from '../models/log';
 import { getUserIdFromRequest } from '../helpers';
 import {
-listLocationsForUser,
-createNewLocationForUser,
-getLocationForUser,
-updateLocationListForUser,
-updateLocationForUser,
-removeLocationForUser
+  listLocationsForUser,
+  createNewLocationForUser,
+  getLocationForUser,
+  updateLocationListForUser,
+  updateLocationForUser,
+  removeLocationForUser
 } from '../models/location';
 
 const LogEntryStream = logStream( { model: Log } );

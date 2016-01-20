@@ -16,6 +16,7 @@
     "lodash.noop": "^3.0.0",
     "react": "^0.14.5",
     "react-dom": "^0.14.5",
+    "react-google-maps": "^4.7.2",
     "react-redux": "^4.0.6",
     "redux": "^3.0.5",
     "redux-debug": "^1.0.3",

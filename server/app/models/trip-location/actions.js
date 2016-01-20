@@ -13,6 +13,20 @@ export function getTripLocationForUser( userId, tripLocationId ) {
   } );
 }
 
+export function removeAllTripLocations( userId ) {
+  return new Promise( ( resolve, reject ) => {
+    findOrCreateTripForUser( userId )
+    .then( ( collection ) => {
+      collection.tripLocations = [];
+      collection.save( ( saveErr ) => {
+        if ( saveErr ) return reject( saveErr );
+        resolve( collection.tripLocations );
+      } );
+    } )
+    .catch( reject );
+  } );
+}
+
 export function removeTripLocationForUser( userId, tripLocationId ) {
   return new Promise( ( resolve, reject ) => {
     findOrCreateTripForUser( userId )

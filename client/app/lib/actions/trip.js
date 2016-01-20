@@ -1,5 +1,5 @@
 import { gotError } from './general';
-import { deleteTripLocation, createNewTripLocation, listTripLocations } from '../api/trip';
+import { removeAllTripLocations, getTripDistance, deleteTripLocation, createNewTripLocation, listTripLocations } from '../api/trip';
 
 export function removeTripLocation( tripLocationId ) {
   return function( dispatch, getState ) {
@@ -27,9 +27,22 @@ export function gotNewTripLocation( tripLocation ) {
 export function fetchTrip() {
   return function( dispatch, getState ) {
     listTripLocations( getState().auth.token )
-    .then( ( tripLocations ) => dispatch( gotTrip( tripLocations ) ) )
-    .catch( ( err ) => dispatch( gotError( err ) ) );
+    .then( tripLocations => dispatch( gotTrip( tripLocations ) ) )
+    .then( () => dispatch( fetchDistance() ) )
+    .catch( err => dispatch( gotError( err ) ) );
   }
+}
+
+export function fetchDistance() {
+  return function( dispatch, getState ) {
+    getTripDistance( getState().auth.token )
+    .then( data => dispatch( gotDistance( data.distance ) ) )
+    .catch( err => dispatch( gotError( err ) ) );
+  }
+}
+
+export function gotDistance( distance ) {
+  return { type: 'TRIP_GOT_DISTANCE', distance };
 }
 
 export function gotTrip( trip ) {
@@ -38,4 +51,17 @@ export function gotTrip( trip ) {
 
 export function gotRemovedTripLocation( tripLocationId ) {
   return { type: 'TRIP_GOT_REMOVE_TRIP_LOCATION', tripLocationId };
+}
+
+export function clearTrip() {
+  return function( dispatch, getState ) {
+    removeAllTripLocations( getState().auth.token )
+    .then( data => dispatch( gotTrip( data ) ) )
+    .catch( err => dispatch( gotError( err ) ) );
+    dispatch( gotClearedTrip() );
+  }
+}
+
+export function gotClearedTrip() {
+  return { type: 'TRIP_CLEAR' };
 }

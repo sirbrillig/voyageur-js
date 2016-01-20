@@ -3,13 +3,15 @@ import Library from './library';
 import WideButton from './wide-button';
 import Header from './header';
 import Trip from './trip';
+import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
 import { fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
-import { addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
+import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 import { clearNotices } from '../lib/actions/general';
 
 const Footer = () => <div className="footer">Made by Payton</div>;
+const Distance = ( props ) => <div className="distance well well-sm">{ ( props.meters * 0.000621371192 ).toFixed( 1 ) } miles</div>;
 
 const LoggedIn = React.createClass( {
   propTypes: {
@@ -53,6 +55,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( clearNotices() );
   },
 
+  onClearTrip() {
+    this.props.dispatch( clearTrip() );
+  },
+
   renderAddLocationForm() {
     return <AddLocationForm onAddLocation={ this.onAddLocation }/>;
   },
@@ -60,6 +66,11 @@ const LoggedIn = React.createClass( {
   renderAddLocationButton() {
     const text = this.props.isShowingAddLocation ? 'Cancel adding location' : 'Add a new location';
     return <WideButton className="add-location-button" text={ text } onClick={ this.toggleAddLocationForm } />
+  },
+
+  renderMap() {
+    if ( this.props.trip.length < 2 ) return;
+    return <TripMap tripLocations={ this.props.trip } getLocationById={ this.getLocationById } />;
   },
 
   render() {
@@ -73,6 +84,9 @@ const LoggedIn = React.createClass( {
             <Library locations={ this.props.library } onAddToTrip={ this.onAddToTrip } />
           </div>
           <div className="col-xs-6">
+            <WideButton className="clear-trip-button" text="Clear trip" onClick={ this.onClearTrip } />
+            { this.renderMap() }
+            <Distance meters={ this.props.distance } />
             <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
           </div>
         </div>
@@ -83,8 +97,8 @@ const LoggedIn = React.createClass( {
 } );
 
 function mapStateToProps( state ) {
-  const { library, trip, ui, notices } = state;
-  return { library, trip, isShowingAddLocation: ui.isShowingAddLocation, notices };
+  const { library, trip, ui, notices, distance } = state;
+  return { library, trip, distance: distance.distance, isShowingAddLocation: ui.isShowingAddLocation, notices };
 }
 
 export default connect( mapStateToProps )( LoggedIn );
