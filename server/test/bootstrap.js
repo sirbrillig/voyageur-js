@@ -43,6 +43,8 @@ function populateUser1() {
 
   mockDistances.homeCoffeeDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.homeLocation, destination: mockLocations.coffeeLocation, distance: 600 } );
   mockDistances.coffeeBeachDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.coffeeLocation, destination: mockLocations.beachLocation, distance: 400 } );
+  const oldDate = new Date( ( new Date() ).valueOf() - 1000 * 60 * 60 * 24 * 7 );
+  mockDistances.beachHomeDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.beachLocation, destination: mockLocations.homeLocation, distance: 400, cachedAt: oldDate } );
 
   mockTrips.testUserTrip = new Trip( { userId: mockUsers.testUserId, tripLocations: [ mockTripLocations.homeTripLocation, mockTripLocations.coffeeTripLocation, mockTripLocations.beachTripLocation ] } );
 

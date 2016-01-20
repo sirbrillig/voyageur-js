@@ -1,14 +1,12 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import sinonPromise from 'sinon-promise';
 
-sinonPromise( sinon );
 chai.use( sinonChai );
 
 // Mock fetchDistanceBetween to always return 200
 import * as helpers from '../app/helpers';
-helpers.fetchDistanceBetween = sinon.promise().resolves( 200 );
+let fetchPromise = new Promise( ( resolve ) => resolve( 200 ) );
 
 import { getDistanceBetween, getDistanceForUser } from '../app/models/distance';
 import { connectToDb, disconnectFromDb, resetDb, mockUsers, mockLocations } from './bootstrap';
@@ -29,6 +27,11 @@ describe( 'distances', function() {
   } );
 
   describe( '.getDistanceBetween', function() {
+    beforeEach( function( done ) {
+      helpers.fetchDistanceBetween = sinon.stub().returns( fetchPromise );
+      resetDb( done );
+    } );
+
     it( 'returns the distance between the origin and destination if the distance is cached', function() {
       return getDistanceBetween( mockUsers.testUserId, mockLocations.homeLocation._id, mockLocations.coffeeLocation._id )
       .then( function( data ) {
@@ -43,6 +46,13 @@ describe( 'distances', function() {
       } );
     } );
 
+    it( 'does not call fetchDistanceBetween if the distance is cached', function() {
+      return getDistanceBetween( mockUsers.testUserId, mockLocations.homeLocation._id, mockLocations.coffeeLocation._id )
+      .then( function() {
+        expect( helpers.fetchDistanceBetween ).to.not.have.been.called;
+      } );
+    } );
+
     it( 'calls fetchDistanceBetween with the correct arguments if the distance is not cached', function() {
       return getDistanceBetween( mockUsers.testUserId, mockLocations.gameLocation._id, mockLocations.homeLocation._id )
       .then( function() {
@@ -50,13 +60,18 @@ describe( 'distances', function() {
       } );
     } );
 
+    it( 'expires the cached distance if it is older than five days', function() {
+      return getDistanceBetween( mockUsers.testUserId, mockLocations.beachLocation._id, mockLocations.homeLocation._id )
+      .then( function() {
+        expect( helpers.fetchDistanceBetween ).to.have.been.calledOnce;
+      } );
+    } );
+
     it( 'caches the distance if the distance is not cached', function() {
-      // We have to grab the callCount because the mock is global for all tests
-      const callCount = helpers.fetchDistanceBetween.callCount;
       return getDistanceBetween( mockUsers.testUserId, mockLocations.gameLocation._id, mockLocations.homeLocation._id )
       .then( () => getDistanceBetween( mockUsers.testUserId, mockLocations.gameLocation._id, mockLocations.homeLocation._id ) )
       .then( function() {
-        expect( helpers.fetchDistanceBetween.callCount ).to.eql( callCount + 1 );
+        expect( helpers.fetchDistanceBetween ).to.have.been.calledOnce;
       } );
     } );
   } );

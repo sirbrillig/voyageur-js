@@ -4,11 +4,19 @@ import { listTripLocationsForUser } from '../../models/trip-location';
 import { getLocationForUser } from '../../models/location';
 import Distance from '../../models/distance';
 
+const maxCacheAge = ( 1000 * 60 * 60 * 24 * 5 );
+
 export function getDistanceBetween( userId, origin, destination ) {
   return new Promise( ( resolve, reject ) => {
     Distance.findOne( { origin, destination }, ( err, distance ) => {
       if ( err ) return reject( err );
-      if ( distance ) return resolve( { distance: distance.distance } );
+      if ( distance ) {
+        const cacheAge = ( Date.now() - distance.cachedAt );
+        if ( cacheAge < maxCacheAge ) {
+          return resolve( { distance: distance.distance } );
+        }
+        Distance.remove( distance );
+      }
       createNewDistance( userId, origin, destination )
       .then( newDistance => resolve( { distance: newDistance } ) )
       .catch( reject );
