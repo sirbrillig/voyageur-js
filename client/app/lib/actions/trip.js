@@ -27,10 +27,8 @@ export function gotNewTripLocation( tripLocation ) {
 export function fetchTrip() {
   return function( dispatch, getState ) {
     listTripLocations( getState().auth.token )
-    .then( tripLocations => {
-      dispatch( gotTrip( tripLocations ) )
-      dispatch( fetchDistance() )
-    } )
+    .then( tripLocations => dispatch( gotTrip( tripLocations ) ) )
+    .then( () => dispatch( fetchDistance() ) )
     .catch( err => dispatch( gotError( err ) ) );
   }
 }
