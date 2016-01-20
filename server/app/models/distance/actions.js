@@ -1,18 +1,8 @@
-import mongoose from 'mongoose';
 import { Promise } from 'es6-promise';
-import { fetchDistanceBetween } from '../helpers';
-import { listTripLocationsForUser } from '../models/trip-location';
-import { getLocationForUser } from '../models/location';
-
-const DistanceSchema = new mongoose.Schema( {
-  userId: { type: String, required: true },
-  origin: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
-  destination: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
-  distance: { type: Number, required: true },
-} );
-
-const Distance = mongoose.model( 'Distance', DistanceSchema );
-export default Distance;
+import { fetchDistanceBetween } from '../../helpers';
+import { listTripLocationsForUser } from '../../models/trip-location';
+import { getLocationForUser } from '../../models/location';
+import Distance from '../../models/distance';
 
 export function getDistanceBetween( userId, origin, destination ) {
   return new Promise( ( resolve, reject ) => {
