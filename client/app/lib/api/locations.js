@@ -1,7 +1,8 @@
 import request from 'superagent';
 import { Promise } from 'es6-promise';
+import authVars from '../../auth0-variables';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = `http://${authVars.VOYAGEUR_API_SERVER}`;
 
 export function listLocations( token ) {
   return new Promise( ( resolve, reject ) => {
