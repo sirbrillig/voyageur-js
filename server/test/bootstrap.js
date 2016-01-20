@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { Promise } from 'es6-promise';
+mongoose.Promise = Promise;
 import mockgoose from 'mockgoose';
 
 if ( ! mongoose.isMocked ) {
@@ -10,93 +12,73 @@ import TripLocation from '../app/models/trip-location';
 import Trip from '../app/models/trip';
 import Distance from '../app/models/distance';
 
-export const models = {
-  Location,
-  LocationCollection,
-  TripLocation,
-  Trip,
-  Distance,
-};
-
 export const mockUsers = {
   testUserId: 'testUser',
   testUserId2: 'testUser2',
 };
 
-export const mockLocations = {
-  homeLocation: null,
-  gameLocation: null,
-  workLocation: null,
-  foodLocation: null,
-  teaLocation: null,
+export const models = {
+  Location,
+  LocationCollection,
+  TripLocation,
+  Trip,
+  Distance
 };
 
-export const mockDistances = {
-};
+export const mockLocations = {};
+export const mockDistances = {};
+export const mockTripLocations = {};
+export const mockLocationCollections = {};
+export const mockTrips = {};
 
-export const mockTripLocations = {
-  homeTripLocation: null,
-  foodTripLocation: null,
-  teaTripLocation: null,
-};
-
-export const mockLocationCollections = {
-  testUserLocationCollection: null,
-  testUser2LocationCollection: null,
-};
-
-export const mockTrips = {
-  testUserTrip: null,
-  testUserTrip2: null,
-};
-
-export function populateDb( done ) {
+function populateUser1() {
   mockLocations.homeLocation = new Location( { userId: mockUsers.testUserId, name: 'foo', address: '123 home drive' } );
   mockLocations.coffeeLocation = new Location( { userId: mockUsers.testUserId, name: 'coffee', address: '123 coffee place' } );
   mockLocations.beachLocation = new Location( { userId: mockUsers.testUserId, name: 'beach', address: '123 beach place' } );
   mockLocations.gameLocation = new Location( { userId: mockUsers.testUserId, name: 'games', address: 'funplace' } );
 
-  mockLocations.workLocation = new Location( { userId: mockUsers.testUserId2, name: 'work', address: 'workplace' } );
-  mockLocations.foodLocation = new Location( { userId: mockUsers.testUserId2, name: 'food', address: 'foodplace' } );
-  mockLocations.teaLocation = new Location( { userId: mockUsers.testUserId2, name: 'tea', address: 'teaplace' } );
-
   mockTripLocations.homeTripLocation = new TripLocation( { userId: mockUsers.testUserId, location: mockLocations.homeLocation } );
   mockTripLocations.coffeeTripLocation = new TripLocation( { userId: mockUsers.testUserId, location: mockLocations.coffeeLocation } );
   mockTripLocations.beachTripLocation = new TripLocation( { userId: mockUsers.testUserId, location: mockLocations.beachLocation } );
-  mockTripLocations.teaTripLocation = new TripLocation( { userId: mockUsers.testUserId2, location: mockLocations.teaLocation } );
-  mockTripLocations.foodTripLocation = new TripLocation( { userId: mockUsers.testUserId2, location: mockLocations.foodLocation } );
 
   mockDistances.homeCoffeeDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.homeLocation, destination: mockLocations.coffeeLocation, distance: 600 } );
   mockDistances.coffeeBeachDistance = new Distance( { userId: mockUsers.testUserId, origin: mockLocations.coffeeLocation, destination: mockLocations.beachLocation, distance: 400 } );
-  mockDistances.teaFoodDistance = new Distance( { userId: mockUsers.testUserId2, origin: mockLocations.teaLocation, destination: mockLocations.foodLocation, distance: 2000 } );
 
   mockTrips.testUserTrip = new Trip( { userId: mockUsers.testUserId, tripLocations: [ mockTripLocations.homeTripLocation, mockTripLocations.coffeeTripLocation, mockTripLocations.beachTripLocation ] } );
-  mockTrips.testUserTrip2 = new Trip( { userId: mockUsers.testUserId2, tripLocations: [ mockTripLocations.teaTripLocation, mockTripLocations.foodTripLocation ] } );
 
   mockLocationCollections.testUserLocationCollection = new LocationCollection( { userId: mockUsers.testUserId, locations: [ mockLocations.homeLocation ] } );
-  mockLocationCollections.testUser2LocationCollection = new LocationCollection( { userId: mockUsers.testUserId2, locations: [ mockLocations.workLocation, mockLocations.foodLocation, mockLocations.teaLocation ] } );
+}
 
-  mockLocations.homeLocation.save()
-  .then( mockLocations.coffeeLocation.save )
-  .then( mockLocations.beachLocation.save )
-  .then( mockLocations.workLocation.save )
-  .then( mockLocations.gameLocation.save )
-  .then( mockLocations.foodLocation.save )
-  .then( mockLocations.teaLocation.save )
-  .then( mockDistances.homeCoffeeDistance.save )
-  .then( mockDistances.coffeeBeachDistance.save )
-  .then( mockDistances.teaFoodDistance.save )
-  .then( mockTripLocations.homeTripLocation.save )
-  .then( mockTripLocations.coffeeTripLocation.save )
-  .then( mockTripLocations.beachTripLocation.save )
-  .then( mockTripLocations.foodTripLocation.save )
-  .then( mockTripLocations.teaTripLocation.save )
-  .then( mockLocationCollections.testUserLocationCollection.save )
-  .then( mockLocationCollections.testUser2LocationCollection.save )
-  .then( mockTrips.testUserTrip.save )
-  .then( mockTrips.testUserTrip2.save )
+function populateUser2() {
+  mockLocations.foodLocation = new Location( { userId: mockUsers.testUserId2, name: 'food', address: 'foodplace' } );
+  mockLocations.teaLocation = new Location( { userId: mockUsers.testUserId2, name: 'tea', address: 'teaplace' } );
+  mockLocations.workLocation = new Location( { userId: mockUsers.testUserId2, name: 'work', address: 'workplace' } );
+
+  mockTripLocations.teaTripLocation = new TripLocation( { userId: mockUsers.testUserId2, location: mockLocations.teaLocation } );
+  mockTripLocations.foodTripLocation = new TripLocation( { userId: mockUsers.testUserId2, location: mockLocations.foodLocation } );
+
+  mockDistances.teaFoodDistance = new Distance( { userId: mockUsers.testUserId2, origin: mockLocations.teaLocation, destination: mockLocations.foodLocation, distance: 2000 } );
+
+  mockTrips.testUserTrip2 = new Trip( { userId: mockUsers.testUserId2, tripLocations: [ mockTripLocations.teaTripLocation, mockTripLocations.foodTripLocation ] } );
+
+  mockLocationCollections.testUser2LocationCollection = new LocationCollection( { userId: mockUsers.testUserId2, locations: [ mockLocations.workLocation, mockLocations.foodLocation, mockLocations.teaLocation ] } );
+}
+
+export function populateDb( done ) {
+  populateUser1();
+  populateUser2();
+
+  saveAllOf( mockLocations )
+  .then( saveAllOf( mockDistances ) )
+  .then( saveAllOf( mockTripLocations ) )
+  .then( saveAllOf( mockLocationCollections ) )
+  .then( saveAllOf( mockTrips ) )
   .then( () => done() )
   .then( null, ( err ) => done( err ) );
+}
+
+function saveAllOf( objs ) {
+  return Promise.all( Object.keys( objs ).map( l => objs[ l ].save() ) );
 }
 
 export function connectToDb( done ) {
