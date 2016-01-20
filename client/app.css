@@ -201,6 +201,10 @@ ul {
   height: 150px;
 }
 
+.distance {
+  margin: 0;
+}
+
 /**
  * Footer
  */

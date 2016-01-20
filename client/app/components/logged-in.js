@@ -11,6 +11,7 @@ import { addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 import { clearNotices } from '../lib/actions/general';
 
 const Footer = () => <div className="footer">Made by Payton</div>;
+const Distance = ( props ) => <div className="distance well well-sm">{ ( props.meters * 0.000621371192 ).toFixed( 1 ) } miles</div>;
 
 const LoggedIn = React.createClass( {
   propTypes: {
@@ -80,6 +81,7 @@ const LoggedIn = React.createClass( {
           </div>
           <div className="col-xs-6">
             { this.renderMap() }
+            <Distance meters={ this.props.distance } />
             <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
           </div>
         </div>
@@ -90,8 +92,8 @@ const LoggedIn = React.createClass( {
 } );
 
 function mapStateToProps( state ) {
-  const { library, trip, ui, notices } = state;
-  return { library, trip, isShowingAddLocation: ui.isShowingAddLocation, notices };
+  const { library, trip, ui, notices, distance } = state;
+  return { library, trip, distance: distance.distance, isShowingAddLocation: ui.isShowingAddLocation, notices };
 }
 
 export default connect( mapStateToProps )( LoggedIn );
