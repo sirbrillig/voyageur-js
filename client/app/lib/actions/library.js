@@ -39,3 +39,7 @@ export function fetchLibrary() {
 export function gotLibrary( library ) {
   return { type: 'LIBRARY_GOT_LOCATIONS', library };
 }
+
+export function searchLocationsFor( searchString ) {
+  return { type: 'LIBRARY_SEARCH_FOR', searchString };
+}
