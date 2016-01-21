@@ -16,6 +16,7 @@ const Distance = ( props ) => <div className="distance well well-sm">{ ( props.m
 
 const LoggedIn = React.createClass( {
   propTypes: {
+    isLoading: React.PropTypes.bool,
     library: React.PropTypes.array,
     visibleLocations: React.PropTypes.array,
     trip: React.PropTypes.array,
@@ -123,29 +124,43 @@ const LoggedIn = React.createClass( {
     return <TripMap tripLocations={ this.props.trip } getLocationById={ this.getLocationById } />;
   },
 
+  renderLoading() {
+    return (
+      <div className="loading">
+        <h2>Loading...</h2>
+      </div>
+    );
+  },
+
+  renderMain() {
+    return (
+      <div className="row">
+        <div className="col-xs-6">
+          <LocationSearch onChange={ this.onSearch } onClearSearch={ this.onClearSearch } />
+          { this.renderAddLocationButton() }
+          { this.renderAddLocationForm() }
+          <Library
+          locations={ this.props.library }
+          visibleLocations={ this.props.visibleLocations }
+          onAddToTrip={ this.onAddToTrip }
+          selectedLocation={ this.props.selectedLocation }
+          />
+        </div>
+        <div className="col-xs-6">
+          <WideButton className="clear-trip-button" text="Clear trip" onClick={ this.onClearTrip } />
+          { this.renderMap() }
+          <Distance meters={ this.props.distance } />
+          <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
+        </div>
+      </div>
+    );
+  },
+
   render() {
     return (
       <div className="logged-in">
         <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } />
-        <div className="row">
-          <div className="col-xs-6">
-            <LocationSearch onChange={ this.onSearch } onClearSearch={ this.onClearSearch } />
-            { this.renderAddLocationButton() }
-            { this.renderAddLocationForm() }
-            <Library
-            locations={ this.props.library }
-            visibleLocations={ this.props.visibleLocations }
-            onAddToTrip={ this.onAddToTrip }
-            selectedLocation={ this.props.selectedLocation }
-            />
-          </div>
-          <div className="col-xs-6">
-            <WideButton className="clear-trip-button" text="Clear trip" onClick={ this.onClearTrip } />
-            { this.renderMap() }
-            <Distance meters={ this.props.distance } />
-            <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
-          </div>
-        </div>
+          { this.props.isLoading ? this.renderLoading() : this.renderMain() }
         <Footer />
       </div>
     );
@@ -157,6 +172,7 @@ function mapStateToProps( state ) {
   return {
     library: library.locations,
     visibleLocations: library.visibleLocations,
+    isLoading: library.isLoading,
     trip,
     distance: distance.distance,
     isShowingAddLocation: ui.isShowingAddLocation,
