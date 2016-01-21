@@ -37,7 +37,7 @@ const LoggedIn = React.createClass( {
 
   listenForKeys() {
     if ( ! window ) return;
-    window.document.body.addEventListener( 'keyup', ( evt ) => {
+    window.document.body.addEventListener( 'keydown', ( evt ) => {
       switch ( evt.keyCode ) {
         case 40:
           // pressing up and down changes the selected location
@@ -49,16 +49,8 @@ const LoggedIn = React.createClass( {
         case 13:
           // pressing enter adds the selected location
           return this.addSelectedLocationToTrip();
-        case 191:
-          // slash focuses the search field
-          evt.preventDefault();
-          return this.focusSearchField();
       }
     } );
-  },
-
-  focusSearchField() {
-    if ( this.searchField ) this.searchField.focus();
   },
 
   moveSelectDown() {
@@ -112,8 +104,8 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( searchLocationsFor( searchString ) );
   },
 
-  inputWasMounted( searchField ) {
-    this.searchField = searchField;
+  onClearSearch() {
+    this.props.dispatch( searchLocationsFor( '' ) );
   },
 
   renderAddLocationForm() {
@@ -137,7 +129,7 @@ const LoggedIn = React.createClass( {
         <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } />
         <div className="row">
           <div className="col-xs-6">
-            <LocationSearch onChange={ this.onSearch } inputWasMounted={ this.inputWasMounted } />
+            <LocationSearch onChange={ this.onSearch } onClearSearch={ this.onClearSearch } />
             { this.renderAddLocationButton() }
             { this.renderAddLocationForm() }
             <Library

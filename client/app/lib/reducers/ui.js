@@ -8,7 +8,7 @@ export default function auth( state = initialState, action ) {
     case 'LIBRARY_SHOW_ADD_LOCATION':
       return Object.assign( {}, state, { isShowingAddLocation: true } );
     case 'LIBRARY_SEARCH_FOR':
-      return Object.assign( {}, state, { searchString: action.searchString } );
+      return Object.assign( {}, state, { searchString: action.searchString, selectedLocation: 0 } );
     case 'LIBRARY_SELECT_NEXT':
       if ( state.selectedLocation === action.max ) return state;
       return Object.assign( {}, state, { selectedLocation: state.selectedLocation + 1 } );
