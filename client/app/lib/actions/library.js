@@ -43,3 +43,11 @@ export function gotLibrary( library ) {
 export function searchLocationsFor( searchString ) {
   return { type: 'LIBRARY_SEARCH_FOR', searchString };
 }
+
+export function selectNextLocation( max ) {
+  return { type: 'LIBRARY_SELECT_NEXT', max };
+}
+
+export function selectPreviousLocation() {
+  return { type: 'LIBRARY_SELECT_PREVIOUS' };
+}

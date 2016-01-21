@@ -1,9 +1,11 @@
 import React from 'react';
+import classNames from 'classnames';
 
 export default React.createClass( {
   propTypes: {
     location: React.PropTypes.object.isRequired,
     onAddToTrip: React.PropTypes.func.isRequired,
+    isSelected: React.PropTypes.bool,
   },
 
   renderControls() {
@@ -19,8 +21,9 @@ export default React.createClass( {
   },
 
   render() {
+    const locationClassNames = classNames( 'library-location row well well-sm', { 'library-location--selected': this.props.isSelected } );
     return (
-      <li className="library-location row well well-sm" >
+      <li className={ locationClassNames } >
         <div className="library-location__description col-xs-8" >
           <h3 className="library-location__description__name">{ this.props.location.name }</h3>
           <p className="library-location__description__address">{ this.props.location.address }</p>

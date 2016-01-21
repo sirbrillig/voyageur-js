@@ -6,7 +6,7 @@ import Trip from './trip';
 import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
 import { connect } from 'react-redux';
-import { searchLocationsFor, fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
+import { selectPreviousLocation, selectNextLocation, searchLocationsFor, fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 import { clearNotices } from '../lib/actions/general';
 
@@ -17,16 +17,52 @@ const LocationSearch = ( props ) => <div className="location-search"><input clas
 const LoggedIn = React.createClass( {
   propTypes: {
     library: React.PropTypes.array,
+    visibleLocations: React.PropTypes.array,
     trip: React.PropTypes.array,
     isShowingAddLocation: React.PropTypes.bool,
     searchString: React.PropTypes.string,
-    notices: React.PropTypes.array,
+    notices: React.PropTypes.object,
     distance: React.PropTypes.number,
+    selectedLocation: React.PropTypes.number,
   },
 
   componentWillMount() {
     this.props.dispatch( fetchLibrary() );
     this.props.dispatch( fetchTrip() );
+  },
+
+  componentDidMount() {
+    this.listenForKeys();
+  },
+
+  listenForKeys() {
+    if ( ! window ) return;
+    window.document.body.addEventListener( 'keydown', ( evt ) => {
+      switch ( evt.keyCode ) {
+        case 40:
+          // pressing up and down changes the selected location
+          evt.preventDefault();
+          return this.moveSelectDown();
+        case 38:
+          evt.preventDefault();
+          return this.moveSelectUp();
+        case 13:
+          // pressing enter adds the selected location
+          return this.addSelectedLocationToTrip();
+      }
+    } );
+  },
+
+  moveSelectDown() {
+    this.props.dispatch( selectNextLocation( this.props.visibleLocations.length - 1 ) );
+  },
+
+  moveSelectUp() {
+    this.props.dispatch( selectPreviousLocation() );
+  },
+
+  addSelectedLocationToTrip() {
+    // TODO
   },
 
   getLocationById( id ) {
@@ -91,7 +127,12 @@ const LoggedIn = React.createClass( {
             <LocationSearch onChange={ this.onSearch } />
             { this.renderAddLocationButton() }
             { this.renderAddLocationForm() }
-            <Library locations={ this.props.library } onAddToTrip={ this.onAddToTrip } searchString={ this.props.searchString } />
+            <Library
+            locations={ this.props.library }
+            visibleLocations={ this.props.visibleLocations }
+            onAddToTrip={ this.onAddToTrip }
+            selectedLocation={ this.props.selectedLocation }
+            />
           </div>
           <div className="col-xs-6">
             <WideButton className="clear-trip-button" text="Clear trip" onClick={ this.onClearTrip } />
@@ -108,7 +149,7 @@ const LoggedIn = React.createClass( {
 
 function mapStateToProps( state ) {
   const { library, trip, ui, notices, distance } = state;
-  return { library, trip, distance: distance.distance, isShowingAddLocation: ui.isShowingAddLocation, searchString: ui.searchString, notices };
+  return { library: library.locations, visibleLocations: library.visibleLocations, trip, distance: distance.distance, isShowingAddLocation: ui.isShowingAddLocation, searchString: ui.searchString, selectedLocation: ui.selectedLocation, notices };
 }
 
 export default connect( mapStateToProps )( LoggedIn );
