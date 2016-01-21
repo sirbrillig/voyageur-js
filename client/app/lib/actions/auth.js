@@ -1,4 +1,6 @@
+import request from 'superagent';
 import Auth0Lock from 'auth0-lock';
+import { gotError } from './general';
 import authVars from '../../auth0-variables';
 import debugFactory from 'debug';
 
@@ -33,4 +35,22 @@ export function parseAuthToken() {
 
 export function gotAuthToken( token ) {
   return { type: 'AUTH_GOT_TOKEN', token };
+}
+
+export function getProfile() {
+  return function( dispatch, getState ) {
+    const lock = new Auth0Lock( authVars.AUTH0_CLIENT_ID, authVars.AUTH0_DOMAIN );
+    lock.getProfile( getState().auth.token, ( err, profile ) => {
+      if ( err ) return dispatch( gotError( err ) );
+      dispatch( gotProfile( profile ) );
+    } );
+  }
+}
+
+export function gotProfile( user ) {
+  return { type: 'AUTH_GOT_USER', user };
+}
+
+export function logOut() {
+  return { type: 'AUTH_LOG_OUT' };
 }

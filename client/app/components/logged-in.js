@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { selectPreviousLocation, selectNextLocation, searchLocationsFor, fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 import { clearNotices } from '../lib/actions/general';
+import { logOut } from '../lib/actions/auth';
 
 const Footer = () => <div className="footer">Made by Payton</div>;
 const Distance = ( props ) => <div className="distance well well-sm">{ ( props.meters * 0.000621371192 ).toFixed( 1 ) } miles</div>;
@@ -109,6 +110,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( searchLocationsFor( '' ) );
   },
 
+  onLogOut() {
+    this.props.dispatch( logOut() );
+  },
+
   renderAddLocationForm() {
     if ( ! this.props.isShowingAddLocation ) return;
     return <AddLocationForm onAddLocation={ this.onAddLocation }/>;
@@ -159,7 +164,7 @@ const LoggedIn = React.createClass( {
   render() {
     return (
       <div className="logged-in">
-        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } />
+        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } onLogOut={ this.onLogOut } isAdmin={ this.props.isAdmin } />
           { this.props.isLoading ? this.renderLoading() : this.renderMain() }
         <Footer />
       </div>
@@ -168,8 +173,9 @@ const LoggedIn = React.createClass( {
 } );
 
 function mapStateToProps( state ) {
-  const { library, trip, ui, notices, distance } = state;
+  const { auth, library, trip, ui, notices, distance } = state;
   return {
+    isAdmin: ( auth.user && auth.user.role === 'admin' ),
     library: library.locations,
     visibleLocations: library.visibleLocations,
     isLoading: library.isLoading,
