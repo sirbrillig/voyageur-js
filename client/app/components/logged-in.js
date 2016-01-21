@@ -141,9 +141,9 @@ const LoggedIn = React.createClass( {
     return (
       <div className="row">
         <div className="col-xs-6">
-          <LocationSearch onChange={ this.onSearch } onClearSearch={ this.onClearSearch } />
           { this.renderAddLocationButton() }
           { this.renderAddLocationForm() }
+          <LocationSearch onChange={ this.onSearch } onClearSearch={ this.onClearSearch } />
           <Library
           locations={ this.props.library }
           visibleLocations={ this.props.visibleLocations }
