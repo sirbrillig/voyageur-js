@@ -5,6 +5,7 @@ import Header from './header';
 import Trip from './trip';
 import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
+import LocationSearch from './location-search';
 import { connect } from 'react-redux';
 import { selectPreviousLocation, selectNextLocation, searchLocationsFor, fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
@@ -12,7 +13,6 @@ import { clearNotices } from '../lib/actions/general';
 
 const Footer = () => <div className="footer">Made by Payton</div>;
 const Distance = ( props ) => <div className="distance well well-sm">{ ( props.meters * 0.000621371192 ).toFixed( 1 ) } miles</div>;
-const LocationSearch = ( props ) => <div className="location-search"><input className="form-control" type="text" placeholder="Search" onChange={ event => props.onChange( event.target.value ) } /></div>;
 
 const LoggedIn = React.createClass( {
   propTypes: {
@@ -49,8 +49,15 @@ const LoggedIn = React.createClass( {
         case 13:
           // pressing enter adds the selected location
           return this.addSelectedLocationToTrip();
+        case 191:
+          // slash focuses the search field
+          return this.focusSearchField();
       }
     } );
+  },
+
+  focusSearchField() {
+    //TODO
   },
 
   moveSelectDown() {
@@ -150,7 +157,16 @@ const LoggedIn = React.createClass( {
 
 function mapStateToProps( state ) {
   const { library, trip, ui, notices, distance } = state;
-  return { library: library.locations, visibleLocations: library.visibleLocations, trip, distance: distance.distance, isShowingAddLocation: ui.isShowingAddLocation, searchString: ui.searchString, selectedLocation: ui.selectedLocation, notices };
+  return {
+    library: library.locations,
+    visibleLocations: library.visibleLocations,
+    trip,
+    distance: distance.distance,
+    isShowingAddLocation: ui.isShowingAddLocation,
+    searchString: ui.searchString,
+    selectedLocation: ui.selectedLocation,
+    notices,
+  };
 }
 
 export default connect( mapStateToProps )( LoggedIn );
