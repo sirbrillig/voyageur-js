@@ -130,6 +130,10 @@ ul {
   margin: 5px 0px;
 }
 
+.library-location--selected {
+  background-color: #AAD0F1;
+}
+
 .library-location__controls {
   padding-top: 30px;
   text-align: right;

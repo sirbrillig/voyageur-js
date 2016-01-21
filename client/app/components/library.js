@@ -4,12 +4,16 @@ import LibraryLocation from './library-location';
 export default React.createClass( {
   propTypes: {
     locations: React.PropTypes.array,
+    visibleLocations: React.PropTypes.array,
     onAddToTrip: React.PropTypes.func.isRequired,
+    selectedLocation: React.PropTypes.number,
   },
 
   getDefaultProps() {
     return {
       locations: [],
+      visibleLocations: [],
+      selectedLocation: 0,
     };
   },
 
@@ -31,11 +35,13 @@ export default React.createClass( {
   },
 
   renderLocations() {
-    if ( this.props.locations.length > 0 ) return <ul>{ this.props.locations.map( this.renderLocation ) }</ul>;
+    if ( this.props.locations.length < 1 ) return;
+    if ( this.props.visibleLocations.length > 0 ) return <ul>{ this.props.visibleLocations.map( this.renderLocation ) }</ul>;
+    return <div className="alert alert-info">No matches for that search.</div>;
   },
 
-  renderLocation( location ) {
-    return <LibraryLocation key={ location._id } location={ location } onAddToTrip={ this.props.onAddToTrip } />;
+  renderLocation( location, index ) {
+    return <LibraryLocation key={ location._id } location={ location } onAddToTrip={ this.props.onAddToTrip } isSelected={ this.props.selectedLocation === index } />;
   },
 
   render() {
