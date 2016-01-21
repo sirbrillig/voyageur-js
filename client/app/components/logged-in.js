@@ -62,7 +62,8 @@ const LoggedIn = React.createClass( {
   },
 
   addSelectedLocationToTrip() {
-    // TODO
+    const location = this.props.visibleLocations[ this.props.selectedLocation ];
+    this.props.dispatch( addToTrip( location ) );
   },
 
   getLocationById( id ) {
