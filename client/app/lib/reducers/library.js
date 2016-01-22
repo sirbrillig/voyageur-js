@@ -3,6 +3,15 @@ function matchesSearch( searchString, location ) {
   return ( ~ location.name.toLowerCase().indexOf( searchString ) || ~ location.address.toLowerCase().indexOf( searchString ) );
 }
 
+// Find the element in state.locations that matches the ID in action.location,
+// then update it with the data in action.location
+function updateLocationInList( locations, location ) {
+  return locations.map( l => {
+    if ( l._id === location._id ) return location;
+    return l;
+  } );
+}
+
 const initialState = { locations: [], visibleLocations: [], isLoading: true };
 export default function library( state = initialState, action ) {
   switch ( action.type ) {
@@ -15,8 +24,8 @@ export default function library( state = initialState, action ) {
       const locations = [ ...state.locations, action.location ];
       return Object.assign( {}, { locations, visibleLocations: locations } );
     case 'LIBRARY_GOT_UPDATED_LOCATION':
-      // TODO: update it
-      return state;
+      const newLocations = updateLocationInList( state.locations, action.location );
+      return Object.assign( {}, { locations: newLocations, visibleLocations: newLocations } );
   }
   return state;
 }
