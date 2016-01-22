@@ -1,9 +1,9 @@
 import { gotError } from './general';
-import { removeAllTripLocations, getTripDistance, deleteTripLocation, createNewTripLocation, listTripLocations } from '../api/trip';
+import * as api from '../api/trip';
 
 export function removeTripLocation( tripLocationId ) {
   return function( dispatch, getState ) {
-    deleteTripLocation( getState().auth.token, tripLocationId )
+    api.deleteTripLocation( getState().auth.token, tripLocationId )
     .then( () => dispatch( fetchTrip() ) )
     .catch( ( err ) => dispatch( gotError( err ) ) );
     dispatch( gotRemovedTripLocation( tripLocationId ) );
@@ -12,7 +12,7 @@ export function removeTripLocation( tripLocationId ) {
 
 export function addToTrip( location ) {
   return function( dispatch, getState ) {
-    createNewTripLocation( getState().auth.token, { location } )
+    api.createNewTripLocation( getState().auth.token, { location } )
     .then( () => dispatch( fetchTrip() ) )
     .catch( ( err ) => dispatch( gotError( err ) ) );
     const tripLocation = Object.assign( { _id: 'new-trip-location_' + Date.now(), isLoading: true, location } );
@@ -26,7 +26,7 @@ export function gotNewTripLocation( tripLocation ) {
 
 export function fetchTrip() {
   return function( dispatch, getState ) {
-    listTripLocations( getState().auth.token )
+    api.listTripLocations( getState().auth.token )
     .then( tripLocations => dispatch( gotTrip( tripLocations ) ) )
     .then( () => dispatch( fetchDistance() ) )
     .catch( err => dispatch( gotError( err ) ) );
@@ -35,7 +35,7 @@ export function fetchTrip() {
 
 export function fetchDistance() {
   return function( dispatch, getState ) {
-    getTripDistance( getState().auth.token )
+    api.getTripDistance( getState().auth.token )
     .then( data => dispatch( gotDistance( data.distance ) ) )
     .catch( err => dispatch( gotError( err ) ) );
   }
@@ -55,7 +55,7 @@ export function gotRemovedTripLocation( tripLocationId ) {
 
 export function clearTrip() {
   return function( dispatch, getState ) {
-    removeAllTripLocations( getState().auth.token )
+    api.removeAllTripLocations( getState().auth.token )
     .then( data => dispatch( gotTrip( data ) ) )
     .catch( err => dispatch( gotError( err ) ) );
     dispatch( gotClearedTrip() );

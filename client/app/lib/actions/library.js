@@ -1,10 +1,10 @@
 import { gotError } from './general';
-import { updateLocationParams, deleteLocationFromLibrary, createNewLocation, listLocations } from '../api/locations';
+import * as api from '../api/locations';
 
 export function addLocation( params ) {
   return function( dispatch, getState ) {
     if ( ! params.name || ! params.address ) return dispatch( gotError( 'Locations must have a name and an address' ) );
-    createNewLocation( getState().auth.token, params )
+    api.createNewLocation( getState().auth.token, params )
     .then( () => dispatch( fetchLibrary() ) )
     .catch( ( err ) => dispatch( gotError( err ) ) );
     const location = Object.assign( { _id: 'new-location_' + Date.now(), isLoading: true }, params );
@@ -26,7 +26,7 @@ export function showAddLocation() {
 
 export function fetchLibrary() {
   return function( dispatch, getState ) {
-    listLocations( getState().auth.token )
+    api.listLocations( getState().auth.token )
     .then( ( locations ) => {
       dispatch( gotLibrary( locations ) );
     } )
@@ -63,7 +63,7 @@ export function hideEditLocation() {
 export function saveLocation( location, params ) {
   return function( dispatch, getState ) {
     if ( ! params.name || ! params.address ) return dispatch( gotError( 'Locations must have a name and an address' ) );
-    updateLocationParams( getState().auth.token, location, params )
+    api.updateLocationParams( getState().auth.token, location, params )
     .then( () => dispatch( fetchLibrary() ) )
     .catch( ( err ) => dispatch( gotError( err ) ) );
     const updated = Object.assign( {}, location, { isLoading: true }, params );
@@ -78,7 +78,7 @@ export function gotUpdatedLocation( location ) {
 
 export function deleteLocation( location ) {
   return function( dispatch, getState ) {
-    deleteLocationFromLibrary( getState().auth.token, location )
+    api.deleteLocationFromLibrary( getState().auth.token, location )
     .then( () => dispatch( fetchLibrary() ) )
     .catch( ( err ) => dispatch( gotError( err ) ) );
     dispatch( gotDeletedLocation( location ) );
