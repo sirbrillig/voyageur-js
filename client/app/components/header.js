@@ -23,7 +23,7 @@ export default React.createClass( {
   },
 
   renderError( error, key ) {
-    return <div key={ 'notices__error__' + error + key } className="alert alert-warning" role="alert">{ error }</div>;
+    return <div key={ 'notices__error__' + error + key } className="notices__notice alert alert-warning" role="alert">{ error }</div>;
   },
 
   renderClearNotices() {
@@ -43,8 +43,10 @@ export default React.createClass( {
           { this.renderAdminButton() }
           <button className="btn btn-default log-out-button" onClick={ this.props.onLogOut }>Log out</button>
         </div>
-        { this.props.errors.length > 0 ? this.renderClearNotices() : '' }
-        { this.renderNotices() }
+        <div className="notices">
+          { this.props.errors.length > 0 ? this.renderClearNotices() : '' }
+          { this.renderNotices() }
+        </div>
       </div>
     );
   }

@@ -123,6 +123,17 @@ ul {
   margin: 0 2px;
 }
 
+.notices {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 35%;
+}
+
+.notices__notice {
+  margin-bottom: 5px;
+}
+
 .notices__clear {
   margin-bottom: 5px;
 }
