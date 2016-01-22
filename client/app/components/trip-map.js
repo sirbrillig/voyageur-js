@@ -1,6 +1,8 @@
 import React from 'react';
+import debugFactory from 'debug';
 import { GoogleMapLoader, GoogleMap, DirectionsRenderer } from 'react-google-maps';
 
+const debug = debugFactory( 'voyageur:trip-map' );
 const gmaps = window.google.maps;
 
 export default React.createClass( {
@@ -18,22 +20,29 @@ export default React.createClass( {
   },
 
   componentDidMount() {
-    this.calculateRoute();
+    this.calculateRoute( this.props.tripLocations );
   },
 
-  componentWillUpdate() {
-    this.calculateRoute();
+  componentWillReceiveProps( nextProps ) {
+    if ( this.hasMapDataChanged( nextProps.tripLocations ) ) this.calculateRoute( nextProps.tripLocations );
   },
 
-  shouldComponentUpdate( nextProps, nextState ) {
-    if ( nextState !== this.state ) return true;
-    const next = JSON.stringify( nextProps.tripLocations.map( x => x.location._id || x.location ) );
+  hasMapDataChanged( tripLocations ) {
+    const next = JSON.stringify( tripLocations.map( x => x.location._id || x.location ) );
     const prev = JSON.stringify( this.props.tripLocations.map( x => x.location._id || x.location ) );
     return ( next !== prev );
   },
 
-  getAddresses() {
-    return this.props.tripLocations.reduce( ( addrs, tripLocation ) => {
+  shouldComponentUpdate( nextProps, nextState ) {
+    if ( nextState !== this.state ) return true;
+    const hasChanged = this.hasMapDataChanged( nextProps.tripLocations );
+    if ( ! hasChanged ) return false;
+    debug( 'map locations have changed' );
+    return true;
+  },
+
+  getAddresses( tripLocations ) {
+    return tripLocations.reduce( ( addrs, tripLocation ) => {
       if ( tripLocation.location.address ) return addrs.concat( tripLocation.location.address );
       const location = this.props.getLocationById( tripLocation.location );
       if ( ! location ) return addrs;
@@ -41,8 +50,8 @@ export default React.createClass( {
     }, [] );
   },
 
-  calculateRoute() {
-    let addresses = this.getAddresses();
+  calculateRoute( tripLocations ) {
+    let addresses = this.getAddresses( tripLocations );
     if ( addresses.length < 2 ) return console.error( 'Not enough addresses' );
     const origin = addresses.shift();
     const destination = addresses.pop();
@@ -53,6 +62,8 @@ export default React.createClass( {
   },
 
   requestDirections( request ) {
+    debug( 'requesting updated directions...', JSON.stringify( request ) );
+    this.setState( { directions: null } );
     const directionsService = new gmaps.DirectionsService();
     directionsService.route( request, this.updateDirectionsOnMap );
   },
@@ -96,6 +107,8 @@ export default React.createClass( {
   },
 
   render() {
+    if ( ! this.state.directions ) return <div className="trip-map" />;
+    debug( 'rendering map' );
     return (
       <GoogleMapLoader
         containerElement={ <div className="trip-map"/> }
