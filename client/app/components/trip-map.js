@@ -21,8 +21,15 @@ export default React.createClass( {
     this.calculateRoute();
   },
 
-  componentWillReceiveProps() {
+  componentWillUpdate() {
     this.calculateRoute();
+  },
+
+  shouldComponentUpdate( nextProps, nextState ) {
+    if ( nextState !== this.state ) return true;
+    const next = JSON.stringify( nextProps.tripLocations.map( x => x.location._id || x.location ) );
+    const prev = JSON.stringify( this.props.tripLocations.map( x => x.location._id || x.location ) );
+    return ( next !== prev );
   },
 
   getAddresses() {
@@ -54,7 +61,7 @@ export default React.createClass( {
     if ( status === gmaps.DirectionsStatus.OK ) {
       this.setState( { directions: result } );
     } else {
-      console.error( 'error loading directions', result );
+      console.error( 'error loading directions for', this.props.tripLocations, status, result );
     }
   },
 
