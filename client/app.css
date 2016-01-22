@@ -154,8 +154,8 @@ ul {
 .library-location {
   list-style: none;
   text-align: left;
-  padding: 5px 0;
-  margin: 5px 0px;
+  padding: 2px 0;
+  margin: 4px 0px;
 }
 
 .library-location--selected {
@@ -163,8 +163,10 @@ ul {
 }
 
 .library-location__controls {
-  padding-top: 30px;
-  text-align: right;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
 }
 
 .library-location__loading {
@@ -212,13 +214,15 @@ ul {
 .trip-location {
   list-style: none;
   text-align: left;
-  padding: 5px 0;
-  margin: 5px 0px;
+  padding: 2px 0;
+  margin: 4px 0px;
 }
 
 .trip-location__controls {
-  padding-top: 30px;
-  text-align: right;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
 }
 
 .trip-location__loading {

@@ -24,8 +24,10 @@ export default React.createClass( {
           <h3 className="trip-location__description__name">{ this.props.tripLocation.location.name }</h3>
           <p className="trip-location__description__address">{ this.props.tripLocation.location.address }</p>
         </div>
-        <div className="trip-location__controls col-xs-4" >
+        <div className="col-xs-4" >
+          <div className="trip-location__controls" >
           { this.renderControls() }
+          </div>
         </div>
       </li>
     );

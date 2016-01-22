@@ -28,8 +28,10 @@ export default React.createClass( {
           <h3 className="library-location__description__name">{ this.props.location.name }</h3>
           <p className="library-location__description__address">{ this.props.location.address }</p>
         </div>
-        <div className="library-location__controls col-xs-4" >
-          { this.renderControls() }
+        <div className="col-xs-4" >
+          <div className="library-location__controls" >
+            { this.renderControls() }
+          </div>
         </div>
       </li>
     );
