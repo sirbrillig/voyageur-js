@@ -47,8 +47,9 @@ export function getProfile() {
   }
 }
 
-export function gotProfile( user ) {
-  return { type: 'AUTH_GOT_USER', user };
+export function gotProfile( allUserData ) {
+  const { name, role } = allUserData;
+  return { type: 'AUTH_GOT_USER', user: { name, role } };
 }
 
 export function logOut() {
