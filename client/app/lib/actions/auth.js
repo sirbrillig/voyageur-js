@@ -1,10 +1,18 @@
-import request from 'superagent';
+import { createHistory } from 'history';
 import Auth0Lock from 'auth0-lock';
 import { gotError } from './general';
 import authVars from '../../auth0-variables';
 import debugFactory from 'debug';
 
 const debug = debugFactory( 'voyageur:actions' );
+const history = createHistory();
+
+function removeTokenFromUrl() {
+  if ( ! window ) return;
+  const newUrl = window.location.pathname;
+  debug( 'replacing history location with', newUrl );
+  history.replace( newUrl );
+}
 
 export function doAuth() {
   return function() {
@@ -19,17 +27,17 @@ export function parseAuthToken() {
     const idToken = getState().auth.token;
     const hash = ( window ? window.location.hash : '' );
     const authHash = lock.parseHash( hash );
-    if ( !idToken && authHash ) {
+    if ( ! idToken && authHash ) {
       if ( authHash.id_token ) {
         debug( 'parsed auth token from URL' );
-        return dispatch( gotAuthToken( authHash.id_token ) );
+        dispatch( gotAuthToken( authHash.id_token ) );
       }
       if ( authHash.error ) {
         debug( 'error parsing auth token from URL' );
         console.error( 'Error signing in', authHash );
       }
     }
-    debug( 'auth token already present in store' );
+    if ( authHash ) removeTokenFromUrl();
   }
 }
 
