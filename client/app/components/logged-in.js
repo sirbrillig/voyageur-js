@@ -5,9 +5,22 @@ import Header from './header';
 import Trip from './trip';
 import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
+import EditLocationForm from './edit-location-form';
 import LocationSearch from './location-search';
 import { connect } from 'react-redux';
-import { selectPreviousLocation, selectNextLocation, searchLocationsFor, fetchLibrary, addLocation, hideAddLocation, showAddLocation } from '../lib/actions/library';
+import {
+  saveLocation,
+  deleteLocation,
+  startEditLocation,
+  hideEditLocation,
+  selectPreviousLocation,
+  selectNextLocation,
+  searchLocationsFor,
+  fetchLibrary,
+  addLocation,
+  hideAddLocation,
+  showAddLocation
+} from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 import { clearNotices } from '../lib/actions/general';
 import { logOut } from '../lib/actions/auth';
@@ -22,6 +35,7 @@ const LoggedIn = React.createClass( {
     visibleLocations: React.PropTypes.array,
     trip: React.PropTypes.array,
     isShowingAddLocation: React.PropTypes.bool,
+    editingLocation: React.PropTypes.object,
     searchString: React.PropTypes.string,
     notices: React.PropTypes.object,
     distance: React.PropTypes.number,
@@ -90,6 +104,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( addToTrip( location ) );
   },
 
+  onEditLocation( location ) {
+    this.props.dispatch( startEditLocation( location ) )
+  },
+
   onRemoveTripLocation( tripLocation ) {
     this.props.dispatch( removeTripLocation( tripLocation ) );
   },
@@ -112,6 +130,31 @@ const LoggedIn = React.createClass( {
 
   onLogOut() {
     this.props.dispatch( logOut() );
+  },
+
+  onCancelEditLocation() {
+    this.props.dispatch( hideEditLocation() );
+  },
+
+  onSaveLocation( location, params ) {
+    this.props.dispatch( saveLocation( location, params ) );
+  },
+
+  onDeleteLocation( location ) {
+    this.props.dispatch( deleteLocation( location ) );
+  },
+
+  renderEditLocationForm() {
+    if ( this.props.editingLocation ) {
+      return (
+        <EditLocationForm
+          location={ this.props.editingLocation }
+          onSaveLocation={ this.onSaveLocation }
+          onCancelEditLocation={ this.onCancelEditLocation }
+          onDeleteLocation={ this.onDeleteLocation }
+        />
+      );
+    }
   },
 
   renderAddLocationForm() {
@@ -148,6 +191,7 @@ const LoggedIn = React.createClass( {
           locations={ this.props.library }
           visibleLocations={ this.props.visibleLocations }
           onAddToTrip={ this.onAddToTrip }
+          onEditLocation={ this.onEditLocation }
           selectedLocation={ this.props.selectedLocation }
           />
         </div>
@@ -157,6 +201,7 @@ const LoggedIn = React.createClass( {
           <Distance meters={ this.props.distance } />
           <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
         </div>
+        { this.renderEditLocationForm() }
       </div>
     );
   },
@@ -184,6 +229,7 @@ function mapStateToProps( state ) {
     isShowingAddLocation: ui.isShowingAddLocation,
     searchString: ui.searchString,
     selectedLocation: ui.selectedLocation,
+    editingLocation: ui.editingLocation,
     notices,
   };
 }

@@ -6,6 +6,7 @@ export default React.createClass( {
     locations: React.PropTypes.array,
     visibleLocations: React.PropTypes.array,
     onAddToTrip: React.PropTypes.func.isRequired,
+    onEditLocation: React.PropTypes.func.isRequired,
     selectedLocation: React.PropTypes.number,
   },
 
@@ -41,7 +42,15 @@ export default React.createClass( {
   },
 
   renderLocation( location, index ) {
-    return <LibraryLocation key={ location._id } location={ location } onAddToTrip={ this.props.onAddToTrip } isSelected={ this.props.selectedLocation === index } />;
+    return (
+      <LibraryLocation
+        key={ location._id }
+        location={ location }
+        onEditLocation={ this.props.onEditLocation }
+        onAddToTrip={ this.props.onAddToTrip }
+        isSelected={ this.props.selectedLocation === index }
+      />
+    );
   },
 
   render() {

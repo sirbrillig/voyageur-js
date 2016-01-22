@@ -5,6 +5,7 @@ export default React.createClass( {
   propTypes: {
     location: React.PropTypes.object.isRequired,
     onAddToTrip: React.PropTypes.func.isRequired,
+    onEditLocation: React.PropTypes.func.isRequired,
     isSelected: React.PropTypes.bool,
   },
 
@@ -14,7 +15,7 @@ export default React.createClass( {
     }
     return (
       <div className="btn-group btn-group-sm" role="group">
-        <button className="btn btn-default">Edit</button>
+        <button className="btn btn-default" onClick={ () => this.props.onEditLocation( this.props.location ) }>Edit</button>
         <button className="btn btn-primary" onClick={ () => this.props.onAddToTrip( this.props.location ) }>Add</button>
       </div>
     );

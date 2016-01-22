@@ -1,5 +1,5 @@
 import { gotError } from './general';
-import { createNewLocation, listLocations } from '../api/locations';
+import { updateLocationParams, deleteLocationFromLibrary, createNewLocation, listLocations } from '../api/locations';
 
 export function addLocation( params ) {
   return function( dispatch, getState ) {
@@ -50,4 +50,42 @@ export function selectNextLocation( max ) {
 
 export function selectPreviousLocation() {
   return { type: 'LIBRARY_SELECT_PREVIOUS' };
+}
+
+export function startEditLocation( location ) {
+  return { type: 'LIBRARY_EDIT_LOCATION', location };
+}
+
+export function hideEditLocation() {
+  return { type: 'LIBRARY_HIDE_EDIT_LOCATION' };
+}
+
+export function saveLocation( location, params ) {
+  return function( dispatch, getState ) {
+    if ( ! params.name || ! params.address ) return dispatch( gotError( 'Locations must have a name and an address' ) );
+    updateLocationParams( getState().auth.token, location, params )
+    .then( () => dispatch( fetchLibrary() ) )
+    .catch( ( err ) => dispatch( gotError( err ) ) );
+    const updated = Object.assign( {}, location, { isLoading: true }, params );
+    dispatch( gotUpdatedLocation( updated ) );
+    dispatch( hideEditLocation() );
+  }
+}
+
+export function gotUpdatedLocation( location ) {
+  return { type: 'LIBRARY_GOT_UPDATED_LOCATION', location };
+}
+
+export function deleteLocation( location ) {
+  return function( dispatch, getState ) {
+    deleteLocationFromLibrary( getState().auth.token, location )
+    .then( () => dispatch( fetchLibrary() ) )
+    .catch( ( err ) => dispatch( gotError( err ) ) );
+    dispatch( gotDeletedLocation( location ) );
+    dispatch( hideEditLocation() );
+  }
+}
+
+export function gotDeletedLocation( location ) {
+  return { type: 'LIBRARY_DELETE_LOCATION', location };
 }

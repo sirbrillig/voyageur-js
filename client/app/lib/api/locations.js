@@ -32,3 +32,32 @@ export function createNewLocation( token, params ) {
     } );
   } );
 }
+
+export function deleteLocationFromLibrary( token, location ) {
+  return new Promise( ( resolve, reject ) => {
+    const url = `${baseUrl}/secured/locations/${location._id || location}`;
+    request.delete( url )
+    .set( 'Authorization', `Bearer ${token}` )
+    .end( ( err, res ) => {
+      if ( err ) return reject( err );
+      const data = res.body;
+      if ( ! data ) return reject( 'No data found in response' );
+      return resolve( data );
+    } );
+  } );
+}
+
+export function updateLocationParams( token, location, params ) {
+  return new Promise( ( resolve, reject ) => {
+    const url = `${baseUrl}/secured/locations/${location._id || location}`;
+    request.put( url )
+    .send( params )
+    .set( 'Authorization', `Bearer ${token}` )
+    .end( ( err, res ) => {
+      if ( err ) return reject( err );
+      const data = res.body;
+      if ( ! data ) return reject( 'No data found in response' );
+      return resolve( data );
+    } );
+  } );
+}

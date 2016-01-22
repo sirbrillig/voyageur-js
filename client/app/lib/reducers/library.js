@@ -14,6 +14,9 @@ export default function library( state = initialState, action ) {
     case 'LIBRARY_GOT_NEW_LOCATION':
       const locations = [ ...state.locations, action.location ];
       return Object.assign( {}, { locations, visibleLocations: locations } );
+    case 'LIBRARY_GOT_UPDATED_LOCATION':
+      // TODO: update it
+      return state;
   }
   return state;
 }

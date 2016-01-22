@@ -177,6 +177,15 @@ ul {
   margin: 10px 0px;
 }
 
+.edit-location-form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 1000;
+}
+
 .glyphicon-spin {
   -webkit-animation: spin 1000ms infinite linear;
   animation: spin 1800ms infinite linear;
