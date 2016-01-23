@@ -1,4 +1,4 @@
-const initialState = { isShowingAddLocation: false, searchString: '', selectedLocation: 0, editingLocation: null };
+const initialState = { isShowingAddLocation: false, searchString: '', selectedLocation: 0, editingLocation: null, isShowingAdmin: false };
 export default function auth( state = initialState, action ) {
   switch ( action.type ) {
     case 'LIBRARY_GOT_NEW_LOCATION':

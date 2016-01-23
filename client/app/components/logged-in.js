@@ -3,6 +3,7 @@ import Library from './library';
 import WideButton from './wide-button';
 import Header from './header';
 import Trip from './trip';
+import AdminDashboard from './admin-dashboard';
 import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
 import EditLocationForm from './edit-location-form';
@@ -30,6 +31,7 @@ const Distance = ( props ) => <div className="distance well well-sm">{ ( props.m
 
 const LoggedIn = React.createClass( {
   propTypes: {
+    isShowingAdmin: React.PropTypes.bool,
     isLoading: React.PropTypes.bool,
     library: React.PropTypes.array,
     visibleLocations: React.PropTypes.array,
@@ -180,7 +182,12 @@ const LoggedIn = React.createClass( {
     );
   },
 
+  renderAdmin() {
+    return <AdminDashboard />;
+  },
+
   renderMain() {
+    if ( this.props.isShowingAdmin ) return this.renderAdmin();
     return (
       <div className="row">
         <div className="col-xs-6">
@@ -221,6 +228,7 @@ function mapStateToProps( state ) {
   const { auth, library, trip, ui, notices, distance } = state;
   return {
     isAdmin: ( auth.user && auth.user.role === 'admin' ),
+    isShowingAdmin: ui.isShowingAdmin,
     library: library.locations,
     visibleLocations: library.visibleLocations,
     isLoading: library.isLoading,
