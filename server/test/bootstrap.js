@@ -11,6 +11,7 @@ import LocationCollection from '../app/models/location-collection';
 import TripLocation from '../app/models/trip-location';
 import Trip from '../app/models/trip';
 import Distance from '../app/models/distance';
+import Log from '../app/models/log';
 
 export const mockUsers = {
   testUserId: 'testUser',
@@ -25,6 +26,7 @@ export const models = {
   Distance
 };
 
+export const mockEvents = {};
 export const mockLocations = {};
 export const mockDistances = {};
 export const mockTripLocations = {};
@@ -66,15 +68,21 @@ function populateUser2() {
   mockLocationCollections.testUser2LocationCollection = new LocationCollection( { userId: mockUsers.testUserId2, locations: [ mockLocations.workLocation, mockLocations.foodLocation, mockLocations.teaLocation ] } );
 }
 
+function populateEvents() {
+  mockEvents.firstEvent = new Log( { userId: mockUsers.testUserId2, time: Date.now(), name: 'test', event: 'get', level: 1, data: { userId: mockUsers.testUserId2 } } );
+}
+
 export function populateDb( done ) {
   populateUser1();
   populateUser2();
+  populateEvents();
 
   saveAllOf( mockLocations )
   .then( saveAllOf( mockDistances ) )
   .then( saveAllOf( mockTripLocations ) )
   .then( saveAllOf( mockLocationCollections ) )
   .then( saveAllOf( mockTrips ) )
+  .then( saveAllOf( mockEvents ) )
   .then( () => done() )
   .then( null, ( err ) => done( err ) );
 }

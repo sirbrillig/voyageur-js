@@ -2,16 +2,9 @@ import express from 'express';
 import locations from './routes/locations';
 import tripLocations from './routes/trip-locations';
 import distances from './routes/distances';
+import admin from './routes/admin';
 
 const router = express.Router();
-
-router.get( '/ping', ( req, res ) => {
-  res.status( 200 ).json( { text: 'All good. You don\'t need to be authenticated to call this' } );
-} );
-
-router.get( '/secured/ping', ( req, res ) => {
-  res.status( 200 ).json( { text: 'All good. You are authenticated' } );
-} );
 
 router.route( '/secured/locations' )
 .get( locations.list )
@@ -34,6 +27,9 @@ router.route( '/secured/trip-locations/:tripLocationId' )
 .delete( tripLocations.delete );
 
 router.route( '/secured/distance' )
-.get( distances.get )
+.get( distances.get );
+
+router.route( '/admin/events' )
+.get( admin.get );
 
 export default router;

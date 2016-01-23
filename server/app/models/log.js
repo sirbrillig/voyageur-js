@@ -5,14 +5,16 @@ const Schema = mongoose.Schema;
 export default mongoose.model( 'Log', new Schema( {
   userId: { type: String },
   event: { type: String, required: true },
-  data: { type: Object },
-  msg: { type: String },
   level: { type: Number, required: true },
   name: { type: String, required: true },
+  time: { type: Date, required: true },
+  data: { type: Object },
+  msg: { type: String },
   hostname: { type: String },
   pid: { type: String },
   v: { type: String },
-  time: { type: Date, required: true },
   res: { type: Object },
   req: { type: Object },
 } ) );
+
+export * from './log/actions';
