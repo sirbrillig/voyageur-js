@@ -19,6 +19,8 @@ export default function auth( state = initialState, action ) {
       return Object.assign( {}, state, { editingLocation: action.location } );
     case 'LIBRARY_HIDE_EDIT_LOCATION':
       return Object.assign( {}, state, { editingLocation: null } );
+    case 'ADMIN_SHOW_DASHBOARD':
+      return Object.assign( {}, state, { isShowingAdmin: true } );
   }
   return state;
 }

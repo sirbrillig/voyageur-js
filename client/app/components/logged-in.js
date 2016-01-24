@@ -23,7 +23,7 @@ import {
   showAddLocation
 } from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
-import { clearNotices } from '../lib/actions/general';
+import { clearNotices, showAdmin } from '../lib/actions/general';
 import { logOut } from '../lib/actions/auth';
 
 const Footer = () => <div className="footer">Made by Payton</div>;
@@ -146,6 +146,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( deleteLocation( location ) );
   },
 
+  onAdminClick() {
+    this.props.dispatch( showAdmin() );
+  },
+
   renderEditLocationForm() {
     if ( this.props.editingLocation ) {
       return (
@@ -216,7 +220,7 @@ const LoggedIn = React.createClass( {
   render() {
     return (
       <div className="logged-in">
-        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } onLogOut={ this.onLogOut } isAdmin={ this.props.isAdmin } />
+        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } onAdminClick={ this.onAdminClick } onLogOut={ this.onLogOut } isAdmin={ this.props.isAdmin } />
           { this.props.isLoading ? this.renderLoading() : this.renderMain() }
         <Footer />
       </div>

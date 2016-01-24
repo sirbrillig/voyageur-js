@@ -5,7 +5,9 @@ export default React.createClass( {
   propTypes: {
     errors: React.PropTypes.array,
     onClearNotices: React.PropTypes.func,
+    onAdminClick: React.PropTypes.func,
     onLogOut: React.PropTypes.func,
+    isAdmin: React.PropTypes.bool,
     isAdmin: React.PropTypes.bool,
   },
 
@@ -13,6 +15,7 @@ export default React.createClass( {
     return {
       errors: [],
       onClearNotices: noop,
+      onAdminClick: noop,
       onLogOut: noop,
       isAdmin: false,
     }
@@ -37,7 +40,7 @@ export default React.createClass( {
   },
 
   renderAdminButton() {
-    if ( this.props.isAdmin ) return <button className="btn btn-default admin-button"><span className="glyphicon glyphicon-dashboard" aria-hidden="true"></span></button>;
+    if ( this.props.isAdmin ) return <button className="btn btn-default admin-button" onClick={ this.props.onAdminClick }><span className="glyphicon glyphicon-dashboard" aria-hidden="true"></span></button>;
   },
 
   render() {
