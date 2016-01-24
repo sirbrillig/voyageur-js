@@ -7,7 +7,7 @@ export default mongoose.model( 'Log', new Schema( {
   event: { type: String, required: true },
   level: { type: Number, required: true },
   name: { type: String, required: true },
-  time: { type: Date, required: true },
+  time: { type: Date, expires: '30d', required: true },
   data: { type: Object },
   msg: { type: String },
   hostname: { type: String },
