@@ -19,9 +19,10 @@ const AdminDashboard = React.createClass( {
       warning: ( event.event === 'update' ),
       danger: ( event.event === 'delete' ),
     } );
+    const eventDate = new Date( event.time );
     return (
       <tr key={ event._id } className={ classes }>
-        <td>{ event.time }</td>
+        <td>{ eventDate.toString() }</td>
         <td>{ event.userId }</td>
         <td>{ event.name }</td>
         <td>{ event.event }</td>
