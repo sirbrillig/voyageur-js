@@ -1,12 +1,4 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import routes from './routes';
 
-import store from './lib/store';
-import App from './components/app';
-
-ReactDOM.render(
-  <Provider store={ store } >
-    <App />
-  </Provider>,
-document.getElementById( 'container' ) );
+ReactDOM.render( routes, document.getElementById( 'container' ) );

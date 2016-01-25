@@ -1,9 +1,7 @@
 import React from 'react';
 import Library from './library';
 import WideButton from './wide-button';
-import Header from './header';
 import Trip from './trip';
-import AdminDashboard from './admin-dashboard';
 import TripMap from './trip-map';
 import AddLocationForm from './add-location-form';
 import EditLocationForm from './edit-location-form';
@@ -23,15 +21,11 @@ import {
   showAddLocation
 } from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
-import { clearNotices, showAdmin } from '../lib/actions/general';
-import { logOut } from '../lib/actions/auth';
 
-const Footer = () => <div className="footer">Made by Payton</div>;
 const Distance = ( props ) => <div className="distance well well-sm">{ ( props.meters * 0.000621371192 ).toFixed( 1 ) } miles</div>;
 
 const LoggedIn = React.createClass( {
   propTypes: {
-    isShowingAdmin: React.PropTypes.bool,
     isLoading: React.PropTypes.bool,
     library: React.PropTypes.array,
     visibleLocations: React.PropTypes.array,
@@ -39,7 +33,6 @@ const LoggedIn = React.createClass( {
     isShowingAddLocation: React.PropTypes.bool,
     editingLocation: React.PropTypes.object,
     searchString: React.PropTypes.string,
-    notices: React.PropTypes.object,
     distance: React.PropTypes.number,
     selectedLocation: React.PropTypes.number,
   },
@@ -114,10 +107,6 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( removeTripLocation( tripLocation ) );
   },
 
-  onClearNotices() {
-    this.props.dispatch( clearNotices() );
-  },
-
   onClearTrip() {
     this.props.dispatch( clearTrip() );
   },
@@ -130,10 +119,6 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( searchLocationsFor( '' ) );
   },
 
-  onLogOut() {
-    this.props.dispatch( logOut() );
-  },
-
   onCancelEditLocation() {
     this.props.dispatch( hideEditLocation() );
   },
@@ -144,10 +129,6 @@ const LoggedIn = React.createClass( {
 
   onDeleteLocation( location ) {
     this.props.dispatch( deleteLocation( location ) );
-  },
-
-  onAdminClick() {
-    this.props.dispatch( showAdmin() );
   },
 
   renderEditLocationForm() {
@@ -186,12 +167,7 @@ const LoggedIn = React.createClass( {
     );
   },
 
-  renderAdmin() {
-    return <AdminDashboard />;
-  },
-
   renderMain() {
-    if ( this.props.isShowingAdmin ) return this.renderAdmin();
     return (
       <div className="row">
         <div className="col-xs-6">
@@ -218,31 +194,22 @@ const LoggedIn = React.createClass( {
   },
 
   render() {
-    return (
-      <div className="logged-in">
-        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } onAdminClick={ this.onAdminClick } onLogOut={ this.onLogOut } isAdmin={ this.props.isAdmin } />
-          { this.props.isLoading ? this.renderLoading() : this.renderMain() }
-        <Footer />
-      </div>
-    );
+    return this.props.isLoading ? this.renderLoading() : this.renderMain();
   }
 } );
 
 function mapStateToProps( state ) {
-  const { auth, library, trip, ui, notices, distance } = state;
+  const { library, trip, ui, distance } = state;
   return {
-    isAdmin: ( auth.user && auth.user.role === 'admin' ),
-    isShowingAdmin: ui.isShowingAdmin,
+    isLoading: library.isLoading,
     library: library.locations,
     visibleLocations: library.visibleLocations,
-    isLoading: library.isLoading,
     trip,
     distance: distance.distance,
     isShowingAddLocation: ui.isShowingAddLocation,
     searchString: ui.searchString,
     selectedLocation: ui.selectedLocation,
     editingLocation: ui.editingLocation,
-    notices,
   };
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { doAuth, parseAuthToken, getProfile } from '../lib/actions/auth';
-import LoggedIn from './logged-in';
+import Layout from './layout';
 import LogInBox from './log-in-box';
 
 const App = React.createClass( {
@@ -32,7 +32,7 @@ const App = React.createClass( {
 
   render() {
     if ( this.props.auth.token ) {
-      return ( <LoggedIn /> );
+      return ( <Layout children={ this.props.children } /> );
     }
     return ( <LogInBox showAuth={ this.showAuth } /> );
   }
