@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { clearNotices, showAdmin } from '../lib/actions/general';
+import { clearNotices } from '../lib/actions/general';
 import { logOut } from '../lib/actions/auth';
 import Header from './header';
 
@@ -20,10 +20,6 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( logOut() );
   },
 
-  onAdminClick() {
-    this.props.dispatch( showAdmin() );
-  },
-
   renderMain() {
     return (
       <div className="layout">
@@ -35,7 +31,7 @@ const LoggedIn = React.createClass( {
   render() {
     return (
       <div className="logged-in">
-        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } onAdminClick={ this.onAdminClick } onLogOut={ this.onLogOut } isAdmin={ this.props.isAdmin } />
+        <Header errors={ this.props.notices.errors } onClearNotices={ this.onClearNotices } onLogOut={ this.onLogOut } isAdmin={ this.props.isAdmin } />
           { this.renderMain() }
         <Footer />
       </div>
