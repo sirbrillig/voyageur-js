@@ -89,3 +89,12 @@ export function deleteLocation( location ) {
 export function gotDeletedLocation( location ) {
   return { type: 'LIBRARY_DELETE_LOCATION', location };
 }
+
+export function moveLibraryLocation( location, targetIndex ) {
+  return function( dispatch, getState ) {
+    const newLibrary = getState().locations.slice( 0 ).splice( targetIndex, 0, location );
+    // TODO: call the server
+    // TODO: mark all locations isLoading
+    dispatch( gotLibrary( newLibrary ) );
+  }
+}

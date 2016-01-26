@@ -18,7 +18,8 @@ import {
   fetchLibrary,
   addLocation,
   hideAddLocation,
-  showAddLocation
+  showAddLocation,
+  moveLibraryLocation,
 } from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
 
@@ -131,6 +132,10 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( deleteLocation( location ) );
   },
 
+  onLibraryDrop( location, targetIndex ) {
+    this.props.dispatch( moveLibraryLocation( location, targetIndex ) );
+  },
+
   renderEditLocationForm() {
     if ( this.props.editingLocation ) {
       return (
@@ -179,6 +184,7 @@ const LoggedIn = React.createClass( {
           visibleLocations={ this.props.visibleLocations }
           onAddToTrip={ this.onAddToTrip }
           onEditLocation={ this.onEditLocation }
+          onDrop={ this.onLibraryDrop }
           selectedLocation={ this.props.selectedLocation }
           />
         </div>

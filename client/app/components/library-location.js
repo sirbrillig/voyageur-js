@@ -1,12 +1,15 @@
 import React from 'react';
 import classNames from 'classnames';
+import { DragSource } from 'react-dnd';
 
-export default React.createClass( {
+const LibraryLocation = React.createClass( {
   propTypes: {
     location: React.PropTypes.object.isRequired,
     onAddToTrip: React.PropTypes.func.isRequired,
     onEditLocation: React.PropTypes.func.isRequired,
     isSelected: React.PropTypes.bool,
+    connectDragSource: React.PropTypes.func.isRequired,
+    isDragging: React.PropTypes.bool.isRequired,
   },
 
   renderControls() {
@@ -23,7 +26,7 @@ export default React.createClass( {
 
   render() {
     const locationClassNames = classNames( 'library-location row well well-sm', { 'library-location--selected': this.props.isSelected } );
-    return (
+    return this.props.connectDragSource(
       <li className={ locationClassNames } >
         <div className="library-location__description col-xs-8" >
           <h3 className="library-location__description__name">{ this.props.location.name }</h3>
@@ -38,3 +41,18 @@ export default React.createClass( {
     );
   }
 } );
+
+const componentToItem = {
+  beginDrag( props ) {
+    return { location: props.location._id };
+  }
+};
+
+function collect( connect, monitor ) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+
+export default DragSource( 'LOCATION', componentToItem, collect )( LibraryLocation );
