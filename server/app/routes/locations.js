@@ -1,7 +1,4 @@
-import logStream from 'bunyan-mongodb-stream';
-import bunyan from 'bunyan';
-import Log from '../models/log';
-import { getUserNameFromRequest, getUserIdFromRequest } from '../helpers';
+import { getUserIdFromRequest } from '../helpers';
 import {
   listLocationsForUser,
   createNewLocationForUser,
@@ -11,16 +8,6 @@ import {
   removeLocationForUser
 } from '../models/location';
 
-const LogEntryStream = logStream( { model: Log } );
-const log = bunyan.createLogger( {
-  name: 'location-events',
-  streams: [
-    { stream: process.stdout },
-    { stream: LogEntryStream },
-  ],
-  serializers: bunyan.stdSerializers
-} );
-
 export default {
   list( req, res ) {
     const userId = getUserIdFromRequest( req );
@@ -29,7 +16,7 @@ export default {
       res.status( 200 ).json( locations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'list' }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -42,7 +29,7 @@ export default {
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { name, address } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -55,7 +42,7 @@ export default {
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { locationId } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -68,7 +55,7 @@ export default {
       res.status( 200 ).json( updatedLocations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'updateList', data: { locations } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -82,7 +69,7 @@ export default {
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'update', data: { locationId, name, address } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -95,7 +82,7 @@ export default {
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'delete', data: { locationId } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } )
   }

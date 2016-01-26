@@ -1,8 +1,4 @@
-import logStream from 'bunyan-mongodb-stream';
-import bunyan from 'bunyan';
-
-import Log from '../models/log';
-import { getUserNameFromRequest, getUserIdFromRequest } from '../helpers';
+import { getUserIdFromRequest } from '../helpers';
 import {
   listTripLocationsForUser,
   addLocationToTrip,
@@ -12,16 +8,6 @@ import {
   updateTripForUser,
 } from '../models/trip-location';
 
-const LogEntryStream = logStream( { model: Log } );
-const log = bunyan.createLogger( {
-  name: 'trip-location-events',
-  streams: [
-    { stream: process.stdout },
-    { stream: LogEntryStream },
-  ],
-  serializers: bunyan.stdSerializers
-} );
-
 export default {
   list( req, res ) {
     const userId = getUserIdFromRequest( req );
@@ -30,7 +16,7 @@ export default {
       res.status( 200 ).json( locations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'list' }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -43,7 +29,7 @@ export default {
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { location } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -56,7 +42,7 @@ export default {
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { tripLocationId } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -69,7 +55,7 @@ export default {
       res.status( 200 ).json( updatedLocations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'updateList', data: { tripLocationIds } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -81,7 +67,7 @@ export default {
       res.status( 200 ).json( tripLocations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'deleteAll', data: { userId } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -94,9 +80,8 @@ export default {
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
-      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'delete', data: { tripLocationId } }, err.message );
+      req.error( {}, err.message );
       res.status( 502 ).send( err );
     } )
   }
 };
-
