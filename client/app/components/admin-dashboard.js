@@ -14,11 +14,12 @@ const AdminDashboard = React.createClass( {
   },
 
   renderEvent( event ) {
+    const method = event.event.toLowerCase();
     const classes = classNames( {
-      info: ( event.event === 'get' ),
-      success: ( event.event === 'create' ),
-      warning: ( event.event === 'update' ),
-      danger: ( event.event === 'delete' ),
+      info: ( method === 'get' ),
+      success: ( method === 'create' || method === 'post' ),
+      warning: ( method === 'update' || method === 'put' ),
+      danger: ( method === 'delete' ),
     } );
     const eventDate = new Date( event.time );
     return (
@@ -26,8 +27,8 @@ const AdminDashboard = React.createClass( {
         <td>{ eventDate.toString() }</td>
         <td>{ event.userId }</td>
         <td>{ event.userName }</td>
-        <td>{ event.name }</td>
-        <td>{ event.event }</td>
+        <td>{ event.path || event.name }</td>
+        <td>{ method }</td>
       </tr>
     );
   },
