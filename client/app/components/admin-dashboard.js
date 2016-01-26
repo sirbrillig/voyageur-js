@@ -27,8 +27,10 @@ const AdminDashboard = React.createClass( {
         <td>{ eventDate.toString() }</td>
         <td>{ event.userId }</td>
         <td>{ event.userName }</td>
+        <td>{ event.ip }</td>
         <td>{ event.path || event.name }</td>
         <td>{ method }</td>
+        <td>{ JSON.stringify( event.data || event.body ) }</td>
       </tr>
     );
   },
@@ -41,8 +43,10 @@ const AdminDashboard = React.createClass( {
             <th>Date</th>
             <th>User</th>
             <th>Name</th>
+            <th>Source</th>
             <th>Scope</th>
             <th>Event</th>
+            <th>Data</th>
           </tr>
         </thead>
         <tbody>
