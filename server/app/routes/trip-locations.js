@@ -27,7 +27,6 @@ export default {
     const userId = getUserIdFromRequest( req );
     listTripLocationsForUser( userId )
     .then( ( locations ) => {
-      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'list' } );
       res.status( 200 ).json( locations );
     } )
     .catch( ( err ) => {
@@ -41,7 +40,6 @@ export default {
     const { location } = req.body;
     addLocationToTrip( userId, { location } )
     .then( ( tripLocation ) => {
-      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { location } } );
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
@@ -55,7 +53,6 @@ export default {
     const { tripLocationId } = req.params;
     getTripLocationForUser( userId, tripLocationId )
     .then( ( tripLocation ) => {
-      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { tripLocationId } } );
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
@@ -69,7 +66,6 @@ export default {
     const { tripLocationIds } = req.body;
     updateTripForUser( userId, tripLocationIds )
     .then( ( updatedLocations ) => {
-      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'updateList', data: { tripLocationIds } } );
       res.status( 200 ).json( updatedLocations );
     } )
     .catch( ( err ) => {
@@ -82,7 +78,6 @@ export default {
     const userId = getUserIdFromRequest( req );
     removeAllTripLocations( userId )
     .then( ( tripLocations ) => {
-      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'deleteAll', data: { userId } } );
       res.status( 200 ).json( tripLocations );
     } )
     .catch( ( err ) => {
@@ -96,7 +91,6 @@ export default {
     const { tripLocationId } = req.params;
     removeTripLocationForUser( userId, tripLocationId )
     .then( ( tripLocation ) => {
-      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'delete', data: { tripLocationId } } );
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {

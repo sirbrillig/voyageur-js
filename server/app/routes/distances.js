@@ -19,7 +19,6 @@ export default {
     const userId = getUserIdFromRequest( req );
     getDistanceForUser( userId )
     .then( ( distance ) => {
-      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { userId } } );
       res.status( 200 ).json( distance );
     } )
     .catch( ( err ) => {
