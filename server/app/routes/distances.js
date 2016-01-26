@@ -1,7 +1,7 @@
 import logStream from 'bunyan-mongodb-stream';
 import bunyan from 'bunyan';
 import Log from '../models/log';
-import { getUserIdFromRequest } from '../helpers';
+import { getUserNameFromRequest, getUserIdFromRequest } from '../helpers';
 import { getDistanceForUser } from '../models/distance';
 
 const LogEntryStream = logStream( { model: Log } );
@@ -19,11 +19,11 @@ export default {
     const userId = getUserIdFromRequest( req );
     getDistanceForUser( userId )
     .then( ( distance ) => {
-      log.info( { userId, event: 'get', data: { userId } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { userId } } );
       res.status( 200 ).json( distance );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'create', data: { userId } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { userId } }, err.message );
       res.status( 502 ).send( err );
     } );
   }

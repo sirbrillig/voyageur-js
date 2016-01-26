@@ -2,7 +2,7 @@ import logStream from 'bunyan-mongodb-stream';
 import bunyan from 'bunyan';
 
 import Log from '../models/log';
-import { getUserIdFromRequest } from '../helpers';
+import { getUserNameFromRequest, getUserIdFromRequest } from '../helpers';
 import {
   listTripLocationsForUser,
   addLocationToTrip,
@@ -27,11 +27,11 @@ export default {
     const userId = getUserIdFromRequest( req );
     listTripLocationsForUser( userId )
     .then( ( locations ) => {
-      log.info( { userId, event: 'list' } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'list' } );
       res.status( 200 ).json( locations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'list' }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'list' }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -41,11 +41,11 @@ export default {
     const { location } = req.body;
     addLocationToTrip( userId, { location } )
     .then( ( tripLocation ) => {
-      log.info( { userId, event: 'create', data: { location } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { location } } );
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'create', data: { location } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { location } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -55,11 +55,11 @@ export default {
     const { tripLocationId } = req.params;
     getTripLocationForUser( userId, tripLocationId )
     .then( ( tripLocation ) => {
-      log.info( { userId, event: 'get', data: { tripLocationId } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { tripLocationId } } );
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'get', data: { tripLocationId } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { tripLocationId } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -69,11 +69,11 @@ export default {
     const { tripLocationIds } = req.body;
     updateTripForUser( userId, tripLocationIds )
     .then( ( updatedLocations ) => {
-      log.info( { userId, event: 'updateList', data: { tripLocationIds } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'updateList', data: { tripLocationIds } } );
       res.status( 200 ).json( updatedLocations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'updateList', data: { tripLocationIds } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'updateList', data: { tripLocationIds } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -82,11 +82,11 @@ export default {
     const userId = getUserIdFromRequest( req );
     removeAllTripLocations( userId )
     .then( ( tripLocations ) => {
-      log.info( { userId, event: 'deleteAll', data: { userId } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'deleteAll', data: { userId } } );
       res.status( 200 ).json( tripLocations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'deleteAll', data: { userId } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'deleteAll', data: { userId } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -96,11 +96,11 @@ export default {
     const { tripLocationId } = req.params;
     removeTripLocationForUser( userId, tripLocationId )
     .then( ( tripLocation ) => {
-      log.info( { userId, event: 'delete', data: { tripLocationId } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'delete', data: { tripLocationId } } );
       res.status( 200 ).json( tripLocation );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'delete', data: { tripLocationId } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'delete', data: { tripLocationId } }, err.message );
       res.status( 502 ).send( err );
     } )
   }

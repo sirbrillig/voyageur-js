@@ -1,7 +1,7 @@
 import logStream from 'bunyan-mongodb-stream';
 import bunyan from 'bunyan';
 import Log from '../models/log';
-import { getUserIdFromRequest } from '../helpers';
+import { getUserNameFromRequest, getUserIdFromRequest } from '../helpers';
 import {
   listLocationsForUser,
   createNewLocationForUser,
@@ -26,11 +26,11 @@ export default {
     const userId = getUserIdFromRequest( req );
     listLocationsForUser( userId )
     .then( ( locations ) => {
-      log.info( { userId, event: 'list' } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'list' } );
       res.status( 200 ).json( locations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'list' }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'list' }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -40,11 +40,11 @@ export default {
     const { name, address } = req.body;
     createNewLocationForUser( userId, { name, address } )
     .then( ( location ) => {
-      log.info( { userId, event: 'create', data: { name, address } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { name, address } } );
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'create', data: { name, address } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'create', data: { name, address } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -54,11 +54,11 @@ export default {
     const { locationId } = req.params;
     getLocationForUser( userId, locationId )
     .then( ( location ) => {
-      log.info( { userId, event: 'get', data: { locationId } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { locationId } } );
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'get', data: { locationId } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'get', data: { locationId } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -68,11 +68,11 @@ export default {
     const { locations } = req.body;
     updateLocationListForUser( userId, locations )
     .then( ( updatedLocations ) => {
-      log.info( { userId, event: 'updateList', data: { locations } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'updateList', data: { locations } } );
       res.status( 200 ).json( updatedLocations );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'updateList', data: { locations } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'updateList', data: { locations } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -83,11 +83,11 @@ export default {
     const { locationId } = req.params;
     updateLocationForUser( userId, locationId, { name, address } )
     .then( ( location ) => {
-      log.info( { userId, event: 'update', data: { locationId, name, address } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'update', data: { locationId, name, address } } );
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'update', data: { locationId, name, address } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'update', data: { locationId, name, address } }, err.message );
       res.status( 502 ).send( err );
     } );
   },
@@ -97,11 +97,11 @@ export default {
     const { locationId } = req.params;
     removeLocationForUser( userId, locationId )
     .then( ( location ) => {
-      log.info( { userId, event: 'delete', data: { locationId } } );
+      log.info( { userId, userName: getUserNameFromRequest( req ), event: 'delete', data: { locationId } } );
       res.status( 200 ).json( location );
     } )
     .catch( ( err ) => {
-      log.error( { userId, event: 'delete', data: { locationId } }, err.message );
+      log.error( { userId, userName: getUserNameFromRequest( req ), event: 'delete', data: { locationId } }, err.message );
       res.status( 502 ).send( err );
     } )
   }
