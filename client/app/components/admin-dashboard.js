@@ -6,6 +6,7 @@ import classNames from 'classnames';
 const AdminDashboard = React.createClass( {
   propTypes: {
     events: React.PropTypes.array.isRequired,
+    isAdmin: React.PropTypes.bool,
   },
 
   componentWillMount() {
@@ -49,6 +50,7 @@ const AdminDashboard = React.createClass( {
   },
 
   render() {
+    if ( ! this.props.isAdmin ) return <h1>Unauthorized</h1>;
     return (
       <div className="admin">
         <h1>Admin Dashboard</h1>
@@ -61,7 +63,7 @@ const AdminDashboard = React.createClass( {
 } );
 
 function mapStateToProps( state ) {
-  return { events: state.admin.events };
+  return { isAdmin: ( state.auth.user && state.auth.user.role === 'admin' ), events: state.admin.events };
 }
 
 export default connect( mapStateToProps )( AdminDashboard );
