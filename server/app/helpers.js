@@ -52,6 +52,7 @@ export function logFactory() {
     const userName = getUserNameFromRequest( req );
     const logEntry = { userId, userName, path, ip, event: method, body };
     log.info( logEntry );
+    req.log = ( data ) => log.info( Object.assign( {}, logEntry, data ) );
     next();
   }
 }
