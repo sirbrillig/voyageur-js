@@ -31,6 +31,7 @@ const AdminDashboard = React.createClass( {
         <td>{ event.path || event.name }</td>
         <td>{ method }</td>
         <td>{ JSON.stringify( event.data || event.body ) }</td>
+        <td>{ event.msg }</td>
       </tr>
     );
   },
@@ -47,6 +48,7 @@ const AdminDashboard = React.createClass( {
             <th>Scope</th>
             <th>Event</th>
             <th>Data</th>
+            <th>Message</th>
           </tr>
         </thead>
         <tbody>
