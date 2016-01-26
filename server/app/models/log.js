@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 export default mongoose.model( 'Log', new Schema( {
   userId: { type: String },
+  userName: { type: String },
   event: { type: String, required: true },
   level: { type: Number, required: true },
   name: { type: String, required: true },

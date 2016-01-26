@@ -25,6 +25,7 @@ const AdminDashboard = React.createClass( {
       <tr key={ event._id } className={ classes }>
         <td>{ eventDate.toString() }</td>
         <td>{ event.userId }</td>
+        <td>{ event.userName }</td>
         <td>{ event.name }</td>
         <td>{ event.event }</td>
       </tr>
@@ -38,6 +39,7 @@ const AdminDashboard = React.createClass( {
           <tr>
             <th>Date</th>
             <th>User</th>
+            <th>Name</th>
             <th>Scope</th>
             <th>Event</th>
           </tr>
