@@ -17,7 +17,7 @@ function removeTokenFromUrl() {
 export function doAuth() {
   return function() {
     const lock = new Auth0Lock( authVars.AUTH0_CLIENT_ID, authVars.AUTH0_DOMAIN );
-    lock.show();
+    lock.show( { authParams: { scope: 'openid role name email nickname' } } );
   }
 }
 

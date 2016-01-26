@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import noop from 'lodash.noop';
 
 export default React.createClass( {
@@ -37,7 +38,7 @@ export default React.createClass( {
   },
 
   renderAdminButton() {
-    if ( this.props.isAdmin ) return <button className="btn btn-default admin-button"><span className="glyphicon glyphicon-dashboard" aria-hidden="true"></span></button>;
+    if ( this.props.isAdmin ) return <Link to="/admin" className="btn btn-default admin-button"><span className="glyphicon glyphicon-dashboard" aria-hidden="true"></span></Link>;
   },
 
   render() {

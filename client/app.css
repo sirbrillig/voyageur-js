@@ -263,3 +263,10 @@ ul {
 .footer {
   font-size: 1em;
 }
+
+/**
+ * Admin
+ */
+.admin-main {
+  text-align: left;
+}

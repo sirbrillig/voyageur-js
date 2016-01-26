@@ -5,6 +5,7 @@ import distance from './distance';
 import auth from './auth';
 import ui from './ui';
 import notices from './notices';
+import admin from './admin';
 
 export default combineReducers( {
   auth,
@@ -13,4 +14,5 @@ export default combineReducers( {
   ui,
   notices,
   distance,
+  admin,
 } );
