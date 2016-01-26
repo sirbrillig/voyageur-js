@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchEvents } from '../lib/actions/admin.js';
 import classNames from 'classnames';
+import debugFactory from 'debug';
+
+const debug = debugFactory( 'voyageur:admin-dashboard' );
 
 const AdminDashboard = React.createClass( {
   propTypes: {
@@ -18,10 +21,11 @@ const AdminDashboard = React.createClass( {
     const classes = classNames( {
       info: ( method === 'get' ),
       success: ( method === 'create' || method === 'post' ),
-      warning: ( method === 'update' || method === 'put' ),
-      danger: ( method === 'delete' ),
+      warning: ( method === 'update' || method === 'put' || method === 'delete' ),
+      danger: ( event.level > 30 ),
     } );
     const eventDate = new Date( event.time );
+    debug( 'showing log event', event );
     return (
       <tr key={ event._id } className={ classes }>
         <td>{ eventDate.toString() }</td>
