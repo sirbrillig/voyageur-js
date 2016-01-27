@@ -94,17 +94,24 @@ export function gotDeletedLocation( location ) {
 export function moveLibraryLocation( locationId, targetLocationId ) {
   return function( dispatch, getState ) {
     const locations = getState().library.locations;
-    const targetIndex = locations.map( x => x._id ).indexOf( targetLocationId );
-    if ( targetIndex === -1 ) return console.error( 'could not find location in library to move to' );
-    const sourceIndex = locations.map( x => x._id ).indexOf( locationId );
-    if ( sourceIndex === -1 ) return console.error( 'could not find location in library to move it' );
+    const locationIds = locations.map( x => x._id );
+    const targetIndex = locationIds.indexOf( targetLocationId );
+    const sourceIndex = locationIds.indexOf( locationId );
     const location = findWhere( locations, { _id: locationId } );
-    if ( ! location ) return console.error( 'could not find source location' );
+    if ( ! location || sourceIndex === -1 || targetIndex === -1 ) return dispatch( gotError( 'Could not find location data to move it' ) );
+
     let newLibrary = locations.slice( 0 ); // copy the array
     newLibrary.splice( sourceIndex, 1 ); // remove from the old location
     newLibrary.splice( targetIndex, 0, location ); // add the element
-    // TODO: call the server
-    // TODO: mark all locations isLoading
-    dispatch( gotLibrary( newLibrary ) );
+
+    api.reorderLibrary( getState().auth.token, newLibrary.map( x => x._id ) )
+    .then( updatedLocations => dispatch( gotLibrary( updatedLocations ) ) )
+    .catch( err => dispatch( gotError( err ) ) );
+
+    // Optimistically update and mark all locations isLoading
+    dispatch( gotLibrary( newLibrary.map( x => {
+      x.isLoading = true;
+      return x;
+    } ) ) );
   }
 }
