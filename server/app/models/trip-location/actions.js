@@ -68,19 +68,18 @@ function removeTripLocation( tripLocationId, userId ) {
 }
 
 function reorderTripLocations( collection, tripLocationIds ) {
-  // for each tripLocationId, find the matching Id in collection.tripLocations, and if
-  // found, append to the new array. If the new array does not contain an
-  // element in the old array, return the old array to prevent orphans.
-  let orphanFound = false;
   const newIds = tripLocationIds.reduce( ( ordered, tripLocationId ) => {
-    if ( ~ collection.tripLocations.indexOf( tripLocationId ) && ! ~ ordered.indexOf( tripLocationId ) ) {
-      ordered.push( tripLocationId );
-    } else {
-      orphanFound = true;
+    if ( -1 === collection.tripLocations.indexOf( tripLocationId ) ) {
+      throw new Error( `Error reordering tripLocations: new location not found: ${tripLocationId}` );
     }
-    return ordered;
+    if ( -1 !== ordered.indexOf( tripLocationId ) ) {
+      throw new Error( `Error reordering tripLocations: duplicate location found: ${tripLocationId}` );
+    }
+    return [ ...ordered, tripLocationId ];
   }, [] );
-  if ( orphanFound || newIds.length !== collection.tripLocations.length ) return collection.tripLocations;
+  if ( newIds.length !== collection.tripLocations.length ) {
+    throw new Error( `Error reordering tripLocations: differing location length: new ${newIds.length} vs. old ${collection.tripLocations.length}` );
+  }
   return newIds;
 }
 
