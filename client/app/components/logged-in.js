@@ -22,6 +22,9 @@ import {
   moveLibraryLocation,
 } from '../lib/actions/library';
 import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
+import flow from 'lodash.flow';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 const Distance = ( props ) => <div className="distance well well-sm">{ ( props.meters * 0.000621371192 ).toFixed( 1 ) } miles</div>;
 
@@ -219,4 +222,7 @@ function mapStateToProps( state ) {
   };
 }
 
-export default connect( mapStateToProps )( LoggedIn );
+export default flow(
+  DragDropContext( HTML5Backend ),
+  connect( mapStateToProps )
+)( LoggedIn );

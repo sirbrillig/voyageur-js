@@ -1,7 +1,5 @@
 import React from 'react';
 import LibraryLocation from './library-location';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend'
 
 const Library = React.createClass( {
   propTypes: {
@@ -67,4 +65,4 @@ const Library = React.createClass( {
   }
 } );
 
-export default DragDropContext( HTML5Backend )( Library );
+export default Library;
