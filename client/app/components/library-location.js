@@ -13,6 +13,7 @@ const LibraryLocation = React.createClass( {
     isDragging: React.PropTypes.bool.isRequired,
     connectDropTarget: React.PropTypes.func.isRequired,
     isOver: React.PropTypes.bool.isRequired,
+    onDrop: React.PropTypes.func.isRequired,
   },
 
   renderControls() {

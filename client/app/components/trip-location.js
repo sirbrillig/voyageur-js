@@ -1,9 +1,16 @@
 import React from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+import flow from 'lodash.flow';
 
-export default React.createClass( {
+const TripLocation = React.createClass( {
   propTypes: {
     tripLocation: React.PropTypes.object.isRequired,
     onRemoveTripLocation: React.PropTypes.func.isRequired,
+    connectDragSource: React.PropTypes.func.isRequired,
+    isDragging: React.PropTypes.bool.isRequired,
+    connectDropTarget: React.PropTypes.func.isRequired,
+    isOver: React.PropTypes.bool.isRequired,
+    onDrop: React.PropTypes.func.isRequired,
   },
 
   renderControls() {
@@ -18,7 +25,7 @@ export default React.createClass( {
   },
 
   render() {
-    return (
+    return this.props.connectDropTarget( this.props.connectDragSource(
       <li className="trip-location row well well-sm" >
         <div className="trip-location__description col-xs-8" >
           <h3 className="trip-location__description__name">{ this.props.tripLocation.location.name }</h3>
@@ -30,7 +37,46 @@ export default React.createClass( {
           </div>
         </div>
       </li>
-    );
+    ) );
   }
 } );
 
+const dragSpec = {
+  beginDrag( props ) {
+    return { tripLocation: props.tripLocation._id };
+  },
+
+  endDrag( props, monitor ) {
+    const source = props.tripLocation._id;
+    const result = monitor.getDropResult();
+    if ( ! result ) return;
+    const target = result.tripLocation;
+    if ( source === target ) return;
+    props.onDrop( source, target );
+  }
+};
+
+function collectDrag( connect, monitor ) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+
+const dropSpec = {
+  drop( props ) {
+    return { tripLocation: props.tripLocation._id };
+  }
+};
+
+function collectDrop( connect, monitor ) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  }
+}
+
+export default flow(
+  DragSource( 'TRIPLOCATION', dragSpec, collectDrag ),
+  DropTarget( 'TRIPLOCATION', dropSpec, collectDrop )
+)( TripLocation );

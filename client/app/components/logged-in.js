@@ -139,6 +139,12 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( moveLibraryLocation( location, targetLocation ) );
   },
 
+  onTripDrop( tripLocation, targetLocation ) {
+    console.log( 'onTripDrop', tripLocation, targetLocation );
+    //TODO: add this action
+    //this.props.dispatch( moveTripLocation( tripLocation, targetLocation ) );
+  },
+
   renderEditLocationForm() {
     if ( this.props.editingLocation ) {
       return (
@@ -195,7 +201,12 @@ const LoggedIn = React.createClass( {
           <WideButton className="clear-trip-button" text="Clear trip" onClick={ this.onClearTrip } />
           { this.renderMap() }
           <Distance meters={ this.props.distance } />
-          <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
+          <Trip
+            tripLocations={ this.props.trip }
+            getLocationById={ this.getLocationById }
+            onRemoveTripLocation={ this.onRemoveTripLocation }
+            onDrop={ this.onTripDrop }
+          />
         </div>
         { this.renderEditLocationForm() }
       </div>
