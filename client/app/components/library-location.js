@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import { DragSource } from 'react-dnd';
+import { DragSource, DropTarget } from 'react-dnd';
+import flow from 'lodash.flow';
 
 const LibraryLocation = React.createClass( {
   propTypes: {
@@ -10,6 +11,8 @@ const LibraryLocation = React.createClass( {
     isSelected: React.PropTypes.bool,
     connectDragSource: React.PropTypes.func.isRequired,
     isDragging: React.PropTypes.bool.isRequired,
+    connectDropTarget: React.PropTypes.func.isRequired,
+    isOver: React.PropTypes.bool.isRequired,
   },
 
   renderControls() {
@@ -26,7 +29,7 @@ const LibraryLocation = React.createClass( {
 
   render() {
     const locationClassNames = classNames( 'library-location row well well-sm', { 'library-location--selected': this.props.isSelected } );
-    return this.props.connectDragSource(
+    return this.props.connectDropTarget( this.props.connectDragSource(
       <li className={ locationClassNames } >
         <div className="library-location__description col-xs-8" >
           <h3 className="library-location__description__name">{ this.props.location.name }</h3>
@@ -38,21 +41,38 @@ const LibraryLocation = React.createClass( {
           </div>
         </div>
       </li>
-    );
+    ) );
   }
 } );
 
-const componentToItem = {
+const dragSpec = {
   beginDrag( props ) {
+    console.log( 'leaving', props );
     return { location: props.location._id };
   }
 };
 
-function collect( connect, monitor ) {
+function collectDrag( connect, monitor ) {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
   }
 }
 
-export default DragSource( 'LOCATION', componentToItem, collect )( LibraryLocation );
+const dropSpec = {
+  drop( props ) {
+    console.log( 'move to', props );
+  }
+};
+
+function collectDrop( connect, monitor ) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  }
+}
+
+export default flow(
+  DragSource( 'LOCATION', dragSpec, collectDrag ),
+  DropTarget( 'LOCATION', dropSpec, collectDrop )
+)( LibraryLocation );
