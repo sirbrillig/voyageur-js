@@ -49,6 +49,16 @@ const dragSpec = {
   beginDrag( props ) {
     console.log( 'leaving', props );
     return { location: props.location._id };
+  },
+
+  endDrag( props, monitor ) {
+    const source = props.location._id;
+    const result = monitor.getDropResult();
+    if ( ! result ) return;
+    const target = result.location;
+    if ( source === target ) return;
+    console.log( 'hey, let\'s move', source, target );
+    props.onDrop( source, target );
   }
 };
 
@@ -62,6 +72,7 @@ function collectDrag( connect, monitor ) {
 const dropSpec = {
   drop( props ) {
     console.log( 'move to', props );
+    return { location: props.location._id };
   }
 };
 

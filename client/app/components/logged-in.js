@@ -132,8 +132,8 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( deleteLocation( location ) );
   },
 
-  onLibraryDrop( location, targetIndex ) {
-    this.props.dispatch( moveLibraryLocation( location, targetIndex ) );
+  onLibraryDrop( location, targetLocation ) {
+    this.props.dispatch( moveLibraryLocation( location, targetLocation ) );
   },
 
   renderEditLocationForm() {

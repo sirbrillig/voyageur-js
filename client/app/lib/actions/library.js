@@ -1,5 +1,6 @@
 import { gotError } from './general';
 import * as api from '../api/locations';
+import findWhere from 'lodash.findwhere';
 
 export function addLocation( params ) {
   return function( dispatch, getState ) {
@@ -90,9 +91,18 @@ export function gotDeletedLocation( location ) {
   return { type: 'LIBRARY_DELETE_LOCATION', location };
 }
 
-export function moveLibraryLocation( location, targetIndex ) {
+export function moveLibraryLocation( locationId, targetLocationId ) {
   return function( dispatch, getState ) {
-    const newLibrary = getState().locations.slice( 0 ).splice( targetIndex, 0, location );
+    const locations = getState().library.locations;
+    const targetIndex = locations.map( x => x._id ).indexOf( targetLocationId );
+    if ( targetIndex === -1 ) return console.error( 'could not find location in library to move to' );
+    const sourceIndex = locations.map( x => x._id ).indexOf( locationId );
+    if ( sourceIndex === -1 ) return console.error( 'could not find location in library to move it' );
+    const location = findWhere( locations, { _id: locationId } );
+    if ( ! location ) return console.error( 'could not find source location' );
+    let newLibrary = locations.slice( 0 ); // copy the array
+    newLibrary.splice( sourceIndex, 1 ); // remove from the old location
+    newLibrary.splice( targetIndex, 0, location ); // add the element
     // TODO: call the server
     // TODO: mark all locations isLoading
     dispatch( gotLibrary( newLibrary ) );
