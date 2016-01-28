@@ -46,3 +46,40 @@ describe( 'GET /secured/locations', function() {
     } );
   } );
 } );
+
+describe( 'POST /secured/locations', function() {
+  before( function( done ) {
+    connectToDb( done );
+  } );
+
+  after( function() {
+    disconnectFromDb();
+  } );
+
+  beforeEach( function( done ) {
+    resetDb( done );
+  } );
+
+  it( 'creates a new location with the parameters specified', function() {
+    const params = { name: 'createNewLocationForUsertest', address: '1234 address place' };
+    return request( app )
+    .post( '/secured/locations' )
+    .query( { user: mockUsers.testUserId } )
+    .send( params )
+    .expect( res => {
+      expect( res.body.name ).to.be.eql( params.name );
+      expect( res.body.address ).to.be.eql( params.address );
+    } );
+  } );
+
+  it( 'creates a new location without non-whitelisted parameters', function() {
+    const params = { foo: 'bar', name: 'createNewLocationForUsertest', address: '1234 address place' };
+    return request( app )
+    .post( '/secured/locations' )
+    .query( { user: mockUsers.testUserId } )
+    .send( params )
+    .expect( res => {
+      expect( res.body.foo ).to.not.be.ok;
+    } );
+  } );
+} );
