@@ -44,6 +44,6 @@ clean:
 
 test:
 	@echo "Running tests..."
-	$(MOCHA) --compilers js:babel-register
+	$(MOCHA) --compilers js:babel-register --recursive
 
 .PHONY: run watchify install npm node-version build-server clean test
