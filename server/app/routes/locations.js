@@ -23,6 +23,7 @@ export default {
 
   create( req, res ) {
     const userId = getUserIdFromRequest( req );
+    if ( ! req.body ) return res.status( 400 ).send( 'No data provided' );
     const { name, address } = req.body;
     createNewLocationForUser( userId, { name, address } )
     .then( ( location ) => {
@@ -49,6 +50,7 @@ export default {
 
   updateList( req, res ) {
     const userId = getUserIdFromRequest( req );
+    if ( ! req.body ) return res.status( 400 ).send( 'No data provided' );
     const { locations } = req.body;
     updateLocationListForUser( userId, locations )
     .then( ( updatedLocations ) => {
@@ -62,6 +64,7 @@ export default {
 
   update( req, res ) {
     const userId = getUserIdFromRequest( req );
+    if ( ! req.body ) return res.status( 400 ).send( 'No data provided' );
     const { name, address } = req.body;
     const { locationId } = req.params;
     updateLocationForUser( userId, locationId, { name, address } )

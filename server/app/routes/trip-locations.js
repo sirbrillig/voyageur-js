@@ -23,6 +23,7 @@ export default {
 
   create( req, res ) {
     const userId = getUserIdFromRequest( req );
+    if ( ! req.body ) return res.status( 400 ).send( 'No data provided' );
     const { location } = req.body;
     addLocationToTrip( userId, { location } )
     .then( ( tripLocation ) => {
@@ -49,6 +50,7 @@ export default {
 
   updateList( req, res ) {
     const userId = getUserIdFromRequest( req );
+    if ( ! req.body ) return res.status( 400 ).send( 'No data provided' );
     const { tripLocationIds } = req.body;
     updateTripForUser( userId, tripLocationIds )
     .then( ( updatedLocations ) => {
