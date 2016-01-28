@@ -165,6 +165,10 @@ ul {
   background-color: #CCE7FF;
 }
 
+.library-location--droppable {
+  background-color: #47A067;
+}
+
 .library-location__controls {
   display: flex;
   justify-content: center;
@@ -228,6 +232,10 @@ ul {
   text-align: left;
   padding: 2px 0;
   margin: 4px 0px;
+}
+
+.trip-location--droppable {
+  background-color: #47A067;
 }
 
 .trip-location__controls {

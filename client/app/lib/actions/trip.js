@@ -1,5 +1,6 @@
 import { gotError } from './general';
 import * as api from '../api/trip';
+import { reorderModels } from '../helpers';
 
 export function removeTripLocation( tripLocationId ) {
   return function( dispatch, getState ) {
@@ -64,4 +65,21 @@ export function clearTrip() {
 
 export function gotClearedTrip() {
   return { type: 'TRIP_CLEAR' };
+}
+
+export function moveTripLocation( tripLocationId, targetLocationId ) {
+  return function( dispatch, getState ) {
+    const newTrip = reorderModels( getState().trip, tripLocationId, targetLocationId );
+    if ( ! newTrip ) return dispatch( gotError( 'Could not find tripLocation data to move it' ) );
+
+    api.reorderTrip( getState().auth.token, newTrip.map( x => x._id ) )
+    .then( updatedTrip => dispatch( gotTrip( updatedTrip ) ) )
+    .catch( err => dispatch( gotError( err ) ) );
+
+    // Optimistically update and mark all tripLocations isLoading
+    dispatch( gotTrip( newTrip.map( x => {
+      x.isLoading = true;
+      return x;
+    } ) ) );
+  }
 }

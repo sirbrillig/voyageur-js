@@ -70,19 +70,18 @@ function removeLocation( locationId, userId ) {
 }
 
 function reorderLocations( collection, locationIds ) {
-  // for each locationId, find the matching Id in collection.locations, and if
-  // found, append to the new array. If the new array does not contain an
-  // element in the old array, return the old array to prevent orphans.
-  let orphanFound = false;
   const newIds = locationIds.reduce( ( ordered, locationId ) => {
-    if ( ~ collection.locations.indexOf( locationId ) && ! ~ ordered.indexOf( locationId ) ) {
-      ordered.push( locationId );
-    } else {
-      orphanFound = true;
+    if ( -1 === collection.locations.indexOf( locationId ) ) {
+      throw new Error( `Error reordering locations: new location not found: ${locationId}` );
     }
-    return ordered;
+    if ( -1 !== ordered.indexOf( locationId ) ) {
+      throw new Error( `Error reordering locations: duplicate location found: ${locationId}` );
+    }
+    return [ ...ordered, locationId ];
   }, [] );
-  if ( orphanFound || newIds.length !== collection.locations.length ) return collection.locations;
+  if ( newIds.length !== collection.locations.length ) {
+    throw new Error( `Error reordering locations: differing location length: new ${newIds.length} vs. old ${collection.locations.length}` );
+  }
   return newIds;
 }
 

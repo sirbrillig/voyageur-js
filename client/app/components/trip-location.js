@@ -1,9 +1,17 @@
 import React from 'react';
+import classNames from 'classnames';
+import { DragSource, DropTarget } from 'react-dnd';
+import flow from 'lodash.flow';
 
-export default React.createClass( {
+const TripLocation = React.createClass( {
   propTypes: {
     tripLocation: React.PropTypes.object.isRequired,
     onRemoveTripLocation: React.PropTypes.func.isRequired,
+    connectDragSource: React.PropTypes.func.isRequired,
+    isDragging: React.PropTypes.bool.isRequired,
+    connectDropTarget: React.PropTypes.func.isRequired,
+    isOver: React.PropTypes.bool.isRequired,
+    onDrop: React.PropTypes.func.isRequired,
   },
 
   renderControls() {
@@ -18,8 +26,11 @@ export default React.createClass( {
   },
 
   render() {
-    return (
-      <li className="trip-location row well well-sm" >
+    const locationClassNames = classNames( 'trip-location row well well-sm', {
+      'trip-location--droppable': this.props.isOver,
+    } );
+    return this.props.connectDropTarget( this.props.connectDragSource(
+      <li className={ locationClassNames } >
         <div className="trip-location__description col-xs-8" >
           <h3 className="trip-location__description__name">{ this.props.tripLocation.location.name }</h3>
           <p className="trip-location__description__address">{ this.props.tripLocation.location.address }</p>
@@ -30,7 +41,46 @@ export default React.createClass( {
           </div>
         </div>
       </li>
-    );
+    ) );
   }
 } );
 
+const dragSpec = {
+  beginDrag( props ) {
+    return { tripLocation: props.tripLocation._id };
+  },
+
+  endDrag( props, monitor ) {
+    const source = props.tripLocation._id;
+    const result = monitor.getDropResult();
+    if ( ! result ) return;
+    const target = result.tripLocation;
+    if ( source === target ) return;
+    props.onDrop( source, target );
+  }
+};
+
+function collectDrag( connect, monitor ) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+
+const dropSpec = {
+  drop( props ) {
+    return { tripLocation: props.tripLocation._id };
+  }
+};
+
+function collectDrop( connect, monitor ) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  }
+}
+
+export default flow(
+  DragSource( 'TRIPLOCATION', dragSpec, collectDrag ),
+  DropTarget( 'TRIPLOCATION', dropSpec, collectDrop )
+)( TripLocation );

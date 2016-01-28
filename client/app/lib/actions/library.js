@@ -1,5 +1,6 @@
 import { gotError } from './general';
 import * as api from '../api/locations';
+import { reorderModels } from '../helpers';
 
 export function addLocation( params ) {
   return function( dispatch, getState ) {
@@ -88,4 +89,21 @@ export function deleteLocation( location ) {
 
 export function gotDeletedLocation( location ) {
   return { type: 'LIBRARY_DELETE_LOCATION', location };
+}
+
+export function moveLibraryLocation( locationId, targetLocationId ) {
+  return function( dispatch, getState ) {
+    const newLibrary = reorderModels( getState().library.locations, locationId, targetLocationId );
+    if ( ! newLibrary ) return dispatch( gotError( 'Could not find location data to move it' ) );
+
+    api.reorderLibrary( getState().auth.token, newLibrary.map( x => x._id ) )
+    .then( updatedLocations => dispatch( gotLibrary( updatedLocations ) ) )
+    .catch( err => dispatch( gotError( err ) ) );
+
+    // Optimistically update and mark all locations isLoading
+    dispatch( gotLibrary( newLibrary.map( x => {
+      x.isLoading = true;
+      return x;
+    } ) ) );
+  }
 }

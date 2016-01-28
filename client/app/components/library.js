@@ -1,11 +1,12 @@
 import React from 'react';
 import LibraryLocation from './library-location';
 
-export default React.createClass( {
+const Library = React.createClass( {
   propTypes: {
     locations: React.PropTypes.array,
     visibleLocations: React.PropTypes.array,
     onAddToTrip: React.PropTypes.func.isRequired,
+    onDrop: React.PropTypes.func.isRequired,
     onEditLocation: React.PropTypes.func.isRequired,
     selectedLocation: React.PropTypes.number,
   },
@@ -48,6 +49,7 @@ export default React.createClass( {
         location={ location }
         onEditLocation={ this.props.onEditLocation }
         onAddToTrip={ this.props.onAddToTrip }
+        onDrop={ this.props.onDrop }
         isSelected={ this.props.selectedLocation === index }
       />
     );
@@ -63,3 +65,4 @@ export default React.createClass( {
   }
 } );
 
+export default Library;

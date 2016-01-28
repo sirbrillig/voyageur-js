@@ -18,9 +18,13 @@ import {
   fetchLibrary,
   addLocation,
   hideAddLocation,
-  showAddLocation
+  showAddLocation,
+  moveLibraryLocation,
 } from '../lib/actions/library';
-import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
+import { clearTrip, addToTrip, removeTripLocation, moveTripLocation, fetchTrip } from '../lib/actions/trip';
+import flow from 'lodash.flow';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 const Distance = ( props ) => <div className="distance well well-sm">{ ( props.meters * 0.000621371192 ).toFixed( 1 ) } miles</div>;
 
@@ -131,6 +135,14 @@ const LoggedIn = React.createClass( {
     this.props.dispatch( deleteLocation( location ) );
   },
 
+  onLibraryDrop( location, targetLocation ) {
+    this.props.dispatch( moveLibraryLocation( location, targetLocation ) );
+  },
+
+  onTripDrop( tripLocation, targetLocation ) {
+    this.props.dispatch( moveTripLocation( tripLocation, targetLocation ) );
+  },
+
   renderEditLocationForm() {
     if ( this.props.editingLocation ) {
       return (
@@ -179,6 +191,7 @@ const LoggedIn = React.createClass( {
           visibleLocations={ this.props.visibleLocations }
           onAddToTrip={ this.onAddToTrip }
           onEditLocation={ this.onEditLocation }
+          onDrop={ this.onLibraryDrop }
           selectedLocation={ this.props.selectedLocation }
           />
         </div>
@@ -186,7 +199,12 @@ const LoggedIn = React.createClass( {
           <WideButton className="clear-trip-button" text="Clear trip" onClick={ this.onClearTrip } />
           { this.renderMap() }
           <Distance meters={ this.props.distance } />
-          <Trip tripLocations={ this.props.trip } getLocationById={ this.getLocationById } onRemoveTripLocation={ this.onRemoveTripLocation } />
+          <Trip
+            tripLocations={ this.props.trip }
+            getLocationById={ this.getLocationById }
+            onRemoveTripLocation={ this.onRemoveTripLocation }
+            onDrop={ this.onTripDrop }
+          />
         </div>
         { this.renderEditLocationForm() }
       </div>
@@ -213,4 +231,7 @@ function mapStateToProps( state ) {
   };
 }
 
-export default connect( mapStateToProps )( LoggedIn );
+export default flow(
+  DragDropContext( HTML5Backend ),
+  connect( mapStateToProps )
+)( LoggedIn );

@@ -61,3 +61,18 @@ export function updateLocationParams( token, location, params ) {
     } );
   } );
 }
+
+export function reorderLibrary( token, ids ) {
+  return new Promise( ( resolve, reject ) => {
+    const url = `${baseUrl}/secured/locations`;
+    request.put( url )
+    .send( { locations: ids } )
+    .set( 'Authorization', `Bearer ${token}` )
+    .end( ( err, res ) => {
+      if ( err ) return reject( err );
+      const data = res.body;
+      if ( ! data ) return reject( 'No data found in response' );
+      return resolve( data );
+    } );
+  } );
+}
