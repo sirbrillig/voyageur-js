@@ -1,12 +1,15 @@
 import request from 'supertest';
 import express from 'express';
 import router from '../../app/routes';
+import bodyParser from 'body-parser';
 import { connectToDb, disconnectFromDb, resetDb, mockUsers, mockLocations } from '../bootstrap';
-const chai = require( 'chai' );
+import chai from 'chai';
 
 const expect = chai.expect;
 const app = express();
 
+app.use( bodyParser.urlencoded( { extended: true } ) );
+app.use( bodyParser.json() );
 app.use( ( req, res, next ) => {
   req.user = { sub: req.query.user };
   next();
@@ -30,6 +33,7 @@ describe( 'GET /secured/locations', function() {
     return request( app )
     .get( '/secured/locations' )
     .query( { user: mockUsers.testUserId } )
+    .expect( 200 )
     .expect( res => {
       expect( res.body ).to.have.length( 1 );
       expect( res.body[0].name ).to.eql( mockLocations.homeLocation.name );
@@ -41,6 +45,7 @@ describe( 'GET /secured/locations', function() {
     return request( app )
     .get( '/secured/locations' )
     .query( { user: mockUsers.testUserId2 } )
+    .expect( 200 )
     .expect( res => {
       expect( res.body.some( loc => loc.name === mockLocations.homeLocation.name ) ).to.be.false;
     } );
@@ -66,6 +71,7 @@ describe( 'POST /secured/locations', function() {
     .post( '/secured/locations' )
     .query( { user: mockUsers.testUserId } )
     .send( params )
+    .expect( 200 )
     .expect( res => {
       expect( res.body.name ).to.be.eql( params.name );
       expect( res.body.address ).to.be.eql( params.address );
@@ -78,6 +84,7 @@ describe( 'POST /secured/locations', function() {
     .post( '/secured/locations' )
     .query( { user: mockUsers.testUserId } )
     .send( params )
+    .expect( 200 )
     .expect( res => {
       expect( res.body.foo ).to.not.be.ok;
     } );
