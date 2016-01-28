@@ -89,4 +89,21 @@ describe( 'POST /secured/locations', function() {
       expect( res.body.foo ).to.not.be.ok;
     } );
   } );
+
+  it( 'adds the location to the end of the user\'s list', function( done ) {
+    const params = { name: 'createNewLocationForUsertest', address: '1234 address place' };
+    return request( app )
+    .post( '/secured/locations' )
+    .query( { user: mockUsers.testUserId } )
+    .send( params )
+    .end( () => {
+      return request( app )
+      .get( '/secured/locations' )
+      .query( { user: mockUsers.testUserId } )
+      .end( ( err, res ) => {
+        const last = res.body[ res.body.length - 1 ];
+        if ( last.name === params.name ) return done();
+      } );
+    } );
+  } );
 } );
