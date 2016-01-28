@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd';
 import flow from 'lodash.flow';
 
@@ -25,8 +26,11 @@ const TripLocation = React.createClass( {
   },
 
   render() {
+    const locationClassNames = classNames( 'trip-location row well well-sm', {
+      'trip-location--droppable': this.props.isOver,
+    } );
     return this.props.connectDropTarget( this.props.connectDragSource(
-      <li className="trip-location row well well-sm" >
+      <li className={ locationClassNames } >
         <div className="trip-location__description col-xs-8" >
           <h3 className="trip-location__description__name">{ this.props.tripLocation.location.name }</h3>
           <p className="trip-location__description__address">{ this.props.tripLocation.location.address }</p>

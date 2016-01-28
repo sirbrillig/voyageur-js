@@ -29,7 +29,10 @@ const LibraryLocation = React.createClass( {
   },
 
   render() {
-    const locationClassNames = classNames( 'library-location row well well-sm', { 'library-location--selected': this.props.isSelected } );
+    const locationClassNames = classNames( 'library-location row well well-sm', {
+      'library-location--selected': this.props.isSelected,
+      'library-location--droppable': this.props.isOver,
+    } );
     return this.props.connectDropTarget( this.props.connectDragSource(
       <li className={ locationClassNames } >
         <div className="library-location__description col-xs-8" >
