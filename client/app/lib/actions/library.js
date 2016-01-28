@@ -1,6 +1,6 @@
 import { gotError } from './general';
 import * as api from '../api/locations';
-import findWhere from 'lodash.findwhere';
+import { reorderModels } from '../helpers';
 
 export function addLocation( params ) {
   return function( dispatch, getState ) {
@@ -93,16 +93,8 @@ export function gotDeletedLocation( location ) {
 
 export function moveLibraryLocation( locationId, targetLocationId ) {
   return function( dispatch, getState ) {
-    const locations = getState().library.locations;
-    const locationIds = locations.map( x => x._id );
-    const targetIndex = locationIds.indexOf( targetLocationId );
-    const sourceIndex = locationIds.indexOf( locationId );
-    const location = findWhere( locations, { _id: locationId } );
-    if ( ! location || sourceIndex === -1 || targetIndex === -1 ) return dispatch( gotError( 'Could not find location data to move it' ) );
-
-    let newLibrary = locations.slice( 0 ); // copy the array
-    newLibrary.splice( sourceIndex, 1 ); // remove from the old location
-    newLibrary.splice( targetIndex, 0, location ); // add the element
+    const newLibrary = reorderModels( getState().library.locations, locationId, targetLocationId );
+    if ( ! newLibrary ) return dispatch( gotError( 'Could not find location data to move it' ) );
 
     api.reorderLibrary( getState().auth.token, newLibrary.map( x => x._id ) )
     .then( updatedLocations => dispatch( gotLibrary( updatedLocations ) ) )

@@ -21,7 +21,7 @@ import {
   showAddLocation,
   moveLibraryLocation,
 } from '../lib/actions/library';
-import { clearTrip, addToTrip, removeTripLocation, fetchTrip } from '../lib/actions/trip';
+import { clearTrip, addToTrip, removeTripLocation, moveTripLocation, fetchTrip } from '../lib/actions/trip';
 import flow from 'lodash.flow';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -140,9 +140,7 @@ const LoggedIn = React.createClass( {
   },
 
   onTripDrop( tripLocation, targetLocation ) {
-    console.log( 'onTripDrop', tripLocation, targetLocation );
-    //TODO: add this action
-    //this.props.dispatch( moveTripLocation( tripLocation, targetLocation ) );
+    this.props.dispatch( moveTripLocation( tripLocation, targetLocation ) );
   },
 
   renderEditLocationForm() {
